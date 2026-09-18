@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { href: "/stock", label: "Acheter" },
   { href: "/guide-achat", label: "Guide d’achat" },
-  { href: "/#financement", label: "Financement" },
-  { href: "/#livraison", label: "Livraison" },
+  { href: "/financement", label: "Financement" },
+  { href: "/livraison", label: "Livraison" },
 ];
 
 /** Logo: brand name locked as MAS OCAS AUTO, orange slash accent on the O (Distinxion-style mark). */
@@ -91,7 +91,7 @@ export function SiteHeader() {
                   pathname.startsWith("/vehicules")
                 : link.href.startsWith("/guide-achat")
                   ? pathname.startsWith("/guide-achat")
-                  : false;
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
                 <Link
                   key={link.href}

@@ -45,12 +45,12 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white" href="/#financement">
+              <Link className="hover:text-white" href="/financement">
                 Financement
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white" href="/#livraison">
+              <Link className="hover:text-white" href="/livraison">
                 Livraison
               </Link>
             </li>
