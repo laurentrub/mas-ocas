@@ -29,18 +29,22 @@ export function ContactForm() {
         ? `Bonjour,\n\nJe souhaite une simulation de financement pour le véhicule suivant : ${vehiculeParam}.\n\nCordialement`
         : sujetParam === "Livraison"
           ? `Bonjour,\n\nJe souhaite un devis de livraison pour le véhicule suivant : ${vehiculeParam}.\n\nCordialement`
-          : sujetParam === "Rappel"
-            ? `Bonjour,\n\nMerci de me rappeler au sujet du véhicule suivant : ${vehiculeParam}.\n\nCordialement`
-            : `Bonjour,\n\nJe souhaite des informations sur le véhicule suivant : ${vehiculeParam}.\n\nCordialement`
+          : sujetParam === "Rendez-vous"
+            ? `Bonjour,\n\nJe souhaite prendre rendez-vous pour un essai du véhicule suivant : ${vehiculeParam}.\n\nCordialement`
+            : sujetParam === "Rappel"
+              ? `Bonjour,\n\nMerci de me rappeler au sujet du véhicule suivant : ${vehiculeParam}.\n\nCordialement`
+              : `Bonjour,\n\nJe souhaite des informations sur le véhicule suivant : ${vehiculeParam}.\n\nCordialement`
       : sujetParam === "Reprise"
         ? "Bonjour,\n\nJe souhaite une estimation pour une reprise de véhicule.\n\nCordialement"
         : sujetParam === "Financement"
           ? "Bonjour,\n\nJe souhaite faire une simulation de financement.\n\nCordialement"
           : sujetParam === "Livraison"
             ? "Bonjour,\n\nJe souhaite un devis de livraison pour un véhicule.\n\nCordialement"
-            : sujetParam === "Rappel"
-              ? "Bonjour,\n\nMerci de me rappeler.\n\nCordialement"
-              : "",
+            : sujetParam === "Rendez-vous"
+              ? "Bonjour,\n\nJe souhaite prendre rendez-vous pour un essai.\n\nCordialement"
+              : sujetParam === "Rappel"
+                ? "Bonjour,\n\nMerci de me rappeler.\n\nCordialement"
+                : "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
@@ -145,6 +149,7 @@ export function ContactForm() {
           onChange={(e) => setForm({ ...form, interest: e.target.value })}
         >
           <option value="Stock général">Stock général</option>
+          <option value="Rendez-vous">Demande de rendez-vous</option>
           <option value="Livraison">Livraison</option>
           <option value="Financement">Financement</option>
           <option value="Rappel">Demande de rappel</option>

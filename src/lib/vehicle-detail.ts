@@ -125,7 +125,7 @@ export function vehicleFaqItems(vehicle: Vehicle) {
 
 export function contactVehicleHref(
   vehicle: Vehicle,
-  sujet?: "Financement" | "Livraison" | "Rappel"
+  sujet?: "Financement" | "Livraison" | "Rappel" | "Rendez-vous"
 ) {
   const base = `/contact?vehicule=${encodeURIComponent(vehicleDisplayName(vehicle))}`;
   return sujet ? `${base}&sujet=${encodeURIComponent(sujet)}` : base;

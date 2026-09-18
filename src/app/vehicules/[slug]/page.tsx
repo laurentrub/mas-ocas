@@ -4,8 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Calculator,
+  CalendarDays,
   Check,
-  Phone,
   ShieldCheck,
   Truck,
   Wrench,
@@ -77,15 +77,16 @@ export default async function VehicleDetailPage({ params }: Props) {
   const similar = getSimilarVehicles(vehicle, 4);
   const jsonLd = buildVehicleJsonLd(vehicle);
   const faqItems = vehicleFaqItems(vehicle);
-  const tel = company.phone.replace(/\s/g, "");
+  const warrantyLine =
+    vehicle.warrantyNote ??
+    "Garantie adaptée au véhicule — durée et périmètre confirmés à la vente.";
 
   const galleryImages = [
     { src: vehicle.image, alt: vehicle.imageAlt },
     ...(vehicle.gallery ?? []),
   ];
 
-  const ctaInfos = contactVehicleHref(vehicle);
-  const ctaRappel = contactVehicleHref(vehicle, "Rappel");
+  const ctaRendezVous = contactVehicleHref(vehicle, "Rendez-vous");
   const ctaFinance = contactVehicleHref(vehicle, "Financement");
   const ctaLivraison = contactVehicleHref(vehicle, "Livraison");
 
@@ -160,59 +161,65 @@ export default async function VehicleDetailPage({ params }: Props) {
               {formatMileage(vehicle.mileage)} · {vehicle.fuel} ·{" "}
               {vehicle.transmission} · {vehicle.power}
             </p>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <Link
-                href={ctaInfos}
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-orange text-sm font-bold text-white transition-colors hover:bg-[#e05f00]"
-              >
-                Demander des infos
-              </Link>
-              <Link
-                href={ctaRappel}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
-              >
-                <Phone className="size-4" aria-hidden />
-                Être rappelé
-              </Link>
-              <Link
-                href={ctaFinance}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
-              >
-                <Calculator className="size-4" aria-hidden />
-                Financement
-              </Link>
-              <Link
-                href={ctaLivraison}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
-              >
-                <Truck className="size-4" aria-hidden />
-                Devis livraison
-              </Link>
-            </div>
-            <p className="mt-3 text-center text-xs text-[#5a6b80] sm:text-left">
-              Réponse sous 24 h ouvrées · essai sur rendez-vous ·{" "}
-              <a href={`tel:${tel}`} className="font-semibold text-navy hover:text-orange">
-                {company.phone}
-              </a>
+            <p className="mt-2 flex items-start gap-1.5 text-sm text-navy">
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-orange" aria-hidden />
+              <span>{warrantyLine}</span>
             </p>
+
+            <div className="mt-8 grid gap-3">
+              <Link
+                href={ctaRendezVous}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-orange text-sm font-bold text-white transition-colors hover:bg-[#e05f00]"
+              >
+                <CalendarDays className="size-4" aria-hidden />
+                Demande de Rendez-vous
+              </Link>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Link
+                  href={ctaLivraison}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
+                >
+                  <Truck className="size-4" aria-hidden />
+                  Devis livraison
+                </Link>
+                <Link
+                  href={ctaFinance}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
+                >
+                  <Calculator className="size-4" aria-hidden />
+                  Financement
+                </Link>
+              </div>
+            </div>
           </aside>
         </div>
 
-        {/* Description éditoriale */}
-        <section className="mt-14 border-t border-[#dce3ee] pt-10" aria-labelledby="desc-heading">
+        {/* Caractéristiques — avant présentation */}
+        <section
+          className="mt-14 border-t border-[#dce3ee] pt-10"
+          aria-labelledby="specs-heading"
+        >
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-            Présentation
+            Technique
           </p>
           <h2
-            id="desc-heading"
+            id="specs-heading"
             className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
           >
-            Ce véhicule en détail
+            Caractéristiques
           </h2>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#5a6b80] sm:text-lg">
-            {editorial}
-          </p>
+          <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-5 rounded-xl border border-[#d0d9e6] bg-white p-6 sm:grid-cols-3 lg:grid-cols-5">
+            {specs.map((spec) => (
+              <div key={spec.label}>
+                <dt className="text-xs uppercase tracking-[0.14em] text-[#7a8a9c]">
+                  {spec.label}
+                </dt>
+                <dd className="mt-1 text-sm font-semibold text-navy">
+                  {spec.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
         {/* Équipements */}
@@ -262,30 +269,79 @@ export default async function VehicleDetailPage({ params }: Props) {
           )}
         </section>
 
-        {/* Caractéristiques */}
-        <section className="mt-14" aria-labelledby="specs-heading">
+        {/* Description éditoriale */}
+        <section className="mt-14" aria-labelledby="desc-heading">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-            Technique
+            Présentation
           </p>
           <h2
-            id="specs-heading"
+            id="desc-heading"
             className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
           >
-            Caractéristiques
+            Ce véhicule en détail
           </h2>
-          <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-5 rounded-xl border border-[#d0d9e6] bg-white p-6 sm:grid-cols-3 lg:grid-cols-5">
-            {specs.map((spec) => (
-              <div key={spec.label}>
-                <dt className="text-xs uppercase tracking-[0.14em] text-[#7a8a9c]">
-                  {spec.label}
-                </dt>
-                <dd className="mt-1 text-sm font-semibold text-navy">
-                  {spec.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#5a6b80] sm:text-lg">
+            {editorial}
+          </p>
         </section>
+
+        {/* Véhicules similaires — juste avant Préparation */}
+        {similar.length > 0 ? (
+          <section className="mt-14" aria-labelledby="similar-heading">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
+                  Continuer
+                </p>
+                <h2
+                  id="similar-heading"
+                  className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
+                >
+                  Véhicules similaires
+                </h2>
+              </div>
+              <Link
+                href="/stock"
+                className="text-sm font-semibold text-orange hover:underline"
+              >
+                Voir tout le stock
+              </Link>
+            </div>
+            <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {similar.map((v) => (
+                <li key={v.slug}>
+                  <Link
+                    href={vehiclePath(v.slug)}
+                    className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-navy">
+                      <Image
+                        src={v.image}
+                        alt={v.imageAlt}
+                        fill
+                        loading="lazy"
+                        className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
+                    <p className="mt-3 text-xs uppercase tracking-[0.14em] text-[#7a8a9c]">
+                      {v.brand} · {v.year}
+                    </p>
+                    <h3 className="mt-1 font-display text-lg font-bold text-navy group-hover:text-orange">
+                      {v.model}
+                    </h3>
+                    <p className="mt-1 text-sm text-[#5a6b80]">
+                      {formatMileage(v.mileage)} · {v.fuel}
+                    </p>
+                    <p className="mt-2 font-display text-base font-extrabold text-navy">
+                      {formatPrice(v.price)}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {/* Préparation — flags réels seulement */}
         {prep.length > 0 ? (
@@ -464,91 +520,36 @@ export default async function VehicleDetailPage({ params }: Props) {
           </div>
         </section>
 
-        {/* Véhicules similaires */}
-        {similar.length > 0 ? (
-          <section className="mt-14" aria-labelledby="similar-heading">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-                  Continuer
-                </p>
-                <h2
-                  id="similar-heading"
-                  className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
-                >
-                  Véhicules similaires
-                </h2>
-              </div>
-              <Link
-                href="/stock"
-                className="text-sm font-semibold text-orange hover:underline"
-              >
-                Voir tout le stock
-              </Link>
-            </div>
-            <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {similar.map((v) => (
-                <li key={v.slug}>
-                  <Link
-                    href={vehiclePath(v.slug)}
-                    className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
-                  >
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-navy">
-                      <Image
-                        src={v.image}
-                        alt={v.imageAlt}
-                        fill
-                        loading="lazy"
-                        className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                      />
-                    </div>
-                    <p className="mt-3 text-xs uppercase tracking-[0.14em] text-[#7a8a9c]">
-                      {v.brand} · {v.year}
-                    </p>
-                    <h3 className="mt-1 font-display text-lg font-bold text-navy group-hover:text-orange">
-                      {v.model}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#5a6b80]">
-                      {formatMileage(v.mileage)} · {v.fuel}
-                    </p>
-                    <p className="mt-2 font-display text-base font-extrabold text-navy">
-                      {formatPrice(v.price)}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
         {/* Maillage + CTA final */}
         <section className="mt-16 rounded-xl border border-[#d0d9e6] bg-white px-6 py-10 text-center sm:px-10">
           <h2 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">
             Intéressé par ce {vehicle.brand} {vehicle.model} ?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-[#5a6b80]">
-            {company.brand} au Mans — infos, essai, financement ou livraison.
+            {company.brand} au Mans — rendez-vous, financement ou livraison.
             Un interlocuteur vous répond sous 24 h ouvrées.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href={ctaInfos}
-              className="inline-flex h-12 items-center rounded-lg bg-orange px-6 text-sm font-bold text-white hover:bg-[#e05f00]"
+              href={ctaRendezVous}
+              className="inline-flex h-12 items-center gap-2 rounded-lg bg-orange px-6 text-sm font-bold text-white hover:bg-[#e05f00]"
             >
-              Demander des informations
-            </Link>
-            <Link
-              href={ctaFinance}
-              className="inline-flex h-12 items-center rounded-lg border border-navy/20 px-6 text-sm font-bold text-navy hover:border-orange hover:text-orange"
-            >
-              Simulation financement
+              <CalendarDays className="size-4" aria-hidden />
+              Demande de Rendez-vous
             </Link>
             <Link
               href={ctaLivraison}
-              className="inline-flex h-12 items-center rounded-lg border border-navy/20 px-6 text-sm font-bold text-navy hover:border-orange hover:text-orange"
+              className="inline-flex h-12 items-center gap-2 rounded-lg border border-navy/20 px-6 text-sm font-bold text-navy hover:border-orange hover:text-orange"
             >
+              <Truck className="size-4" aria-hidden />
               Devis livraison
+            </Link>
+            <Link
+              href={ctaFinance}
+              className="inline-flex h-12 items-center gap-2 rounded-lg border border-navy/20 px-6 text-sm font-bold text-navy hover:border-orange hover:text-orange"
+            >
+              <Calculator className="size-4" aria-hidden />
+              Financement
             </Link>
           </div>
           <p className="mt-8 text-sm text-[#5a6b80]">
