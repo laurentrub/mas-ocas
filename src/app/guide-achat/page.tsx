@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  Calculator,
-  Car,
-  FileText,
-  Globe,
-  Truck,
-} from "lucide-react";
 import { company } from "@/lib/company";
-import { guideTopics } from "@/lib/guide-achat";
+import { guideArticles } from "@/lib/guide-achat";
+import { guideIcons } from "@/lib/guide-icons";
 
 export const metadata: Metadata = {
   title: "Guide d’achat",
   description:
-    "Acheter, importer, documents, livraison et financement : le guide d’achat MAS OCAS AUTO.",
+    "Guide d’achat MAS OCAS AUTO : acheter, importer, exporter, démarches, documents, homologation, immatriculation, livraison et financement.",
 };
 
-const icons = {
-  acheter: Car,
-  importer: Globe,
-  documents: FileText,
-  livraison: Truck,
-  frais: Calculator,
-} as const;
-
-export default function GuideAchatPage() {
+export default function GuideAchatHubPage() {
   return (
     <div className="bg-[#f4f6f9]">
       <section className="border-b border-[#dce3ee] bg-white py-14 lg:py-20">
@@ -36,9 +22,9 @@ export default function GuideAchatPage() {
             Guide d’achat
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#5a6b80] sm:text-lg">
-            Les étapes essentielles pour choisir, financer et recevoir votre
-            véhicule d’occasion — avec un accompagnement clair jusqu’à la remise
-            des clés.
+            Achat d’occasion, import, export, démarches et livraison : les
+            repères pour avancer sereinement, avec l’accompagnement de Mathieu
+            SINGER au Mans.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -58,45 +44,33 @@ export default function GuideAchatPage() {
       </section>
 
       <section className="py-14 lg:py-20">
-        <div className="mx-auto max-w-[1200px] space-y-10 px-4 sm:px-6 lg:px-8">
-          {guideTopics.map((topic) => {
-            const Icon = icons[topic.id];
-            return (
-              <article
-                key={topic.id}
-                id={topic.id}
-                className="scroll-mt-28 border-t-[3px] border-orange bg-white px-6 py-8 sm:px-8 sm:py-10"
-              >
-                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-navy text-orange">
-                    <Icon className="size-6" aria-hidden />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">
-                      {topic.title}
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {guideArticles.map((article) => {
+              const Icon = guideIcons[article.icon];
+              return (
+                <li key={article.slug}>
+                  <Link
+                    href={`/guide-achat/${article.slug}`}
+                    className="group flex h-full flex-col border-t-[3px] border-orange bg-white px-6 py-7 transition-shadow hover:shadow-[0_8px_24px_rgba(10,37,64,0.08)]"
+                  >
+                    <div className="flex size-11 items-center justify-center rounded-lg bg-navy text-orange">
+                      <Icon className="size-5" aria-hidden />
+                    </div>
+                    <h2 className="mt-5 font-display text-xl font-extrabold tracking-tight text-navy group-hover:text-orange">
+                      {article.title}
                     </h2>
-                    <p className="mt-2 text-base font-medium text-[#5a6b80]">
-                      {topic.summary}
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[#5a6b80]">
+                      {article.summary}
                     </p>
-                    <ul className="mt-6 space-y-3">
-                      {topic.body.map((paragraph) => (
-                        <li
-                          key={paragraph}
-                          className="flex gap-3 text-[15px] leading-relaxed text-[#5a6b80]"
-                        >
-                          <span
-                            className="mt-2 size-1.5 shrink-0 rounded-full bg-orange"
-                            aria-hidden
-                          />
-                          <span>{paragraph}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+                    <span className="mt-5 text-sm font-bold text-orange">
+                      Lire le guide →
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
 
@@ -107,8 +81,9 @@ export default function GuideAchatPage() {
               Une question sur votre projet ?
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/75">
-              Contactez {company.brand} au Mans : stock, importation, démarches
-              ou livraison — un interlocuteur vous répond.
+              Contactez {company.brand} au Mans : stock, importation,
+              exportation, démarches ou livraison — un interlocuteur vous
+              répond.
             </p>
           </div>
           <Link

@@ -3,10 +3,8 @@ import Image from "next/image";
 import {
   BadgeCheck,
   Calculator,
-  Car,
   ClipboardCheck,
   FileText,
-  Globe,
   Handshake,
   MapPin,
   PackageCheck,
@@ -19,16 +17,9 @@ import { HeroSearch } from "@/components/hero-search";
 import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsletter } from "@/components/home-newsletter";
 import { company } from "@/lib/company";
-import { guideTopics } from "@/lib/guide-achat";
+import { homepageGuideTopics } from "@/lib/guide-achat";
+import { guideIcons } from "@/lib/guide-icons";
 import { formatMileage, formatPrice, vehicles } from "@/lib/vehicles";
-
-const guideIcons = {
-  acheter: Car,
-  importer: Globe,
-  documents: FileText,
-  livraison: Truck,
-  frais: Calculator,
-} as const;
 
 const heroVisual = {
   src: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1600&q=80",
@@ -450,25 +441,30 @@ export default function HomePage() {
               Guide d’achat
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[#5a6b80]">
-              Les repères essentiels avant de vous engager : achat, importation,
-              démarches, livraison et financement — expliqués simplement.
+              Achat, import, export, documents, livraison et financement —
+              les essentiels avant de vous engager, expliqués simplement.
             </p>
           </div>
-          <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {guideTopics.map((topic) => {
-              const Icon = guideIcons[topic.id];
+          <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {homepageGuideTopics.map((topic) => {
+              const Icon = guideIcons[topic.icon];
               return (
-                <li
-                  key={topic.id}
-                  className="border-t-[3px] border-orange pt-5"
-                >
-                  <Icon className="size-6 text-orange" aria-hidden />
-                  <h3 className="mt-4 font-display text-lg font-bold text-navy">
-                    {topic.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#5a6b80]">
-                    {topic.summary}
-                  </p>
+                <li key={topic.slug} className="border-t-[3px] border-orange pt-5">
+                  <Link
+                    href={`/guide-achat/${topic.slug}`}
+                    className="group block"
+                  >
+                    <Icon className="size-6 text-orange" aria-hidden />
+                    <h3 className="mt-4 font-display text-lg font-bold text-navy group-hover:text-orange">
+                      {topic.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#5a6b80]">
+                      {topic.summary}
+                    </p>
+                    <span className="mt-3 inline-block text-sm font-bold text-orange">
+                      Lire →
+                    </span>
+                  </Link>
                 </li>
               );
             })}
@@ -478,7 +474,7 @@ export default function HomePage() {
               href="/guide-achat"
               className="inline-flex h-12 items-center rounded-lg bg-orange px-6 text-sm font-bold text-white transition-colors hover:bg-[#e05f00]"
             >
-              Consulter le guide d&apos;achat
+              Voir tout le guide d&apos;achat
             </Link>
           </div>
         </div>

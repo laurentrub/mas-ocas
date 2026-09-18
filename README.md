@@ -28,9 +28,11 @@ Le script `dev` utilise webpack + file polling (évite les erreurs `EMFILE: too 
 
 ## Pages
 
-- `/` — accueil (hero marque)
+- `/` — accueil (hero marque + sections)
 - `/stock` — liste du stock (données mock)
 - `/stock/[slug]` — fiche véhicule
+- `/guide-achat` — hub SEO Guide d’achat
+- `/guide-achat/[slug]` — articles (achat, import, export, démarches, etc.)
 - `/contact` — demande d’information
 - `/mentions-legales` — infos légales (KBis)
 
