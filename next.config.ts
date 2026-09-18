@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Prevent Turbopack from walking up to ~/Documents (stray package-lock.json there).
+  turbopack: {
+    root: process.cwd(),
+  },
   images: {
     remotePatterns: [
       {
