@@ -3,22 +3,32 @@ import Image from "next/image";
 import {
   BadgeCheck,
   Calculator,
+  Car,
   ClipboardCheck,
   FileText,
+  Globe,
   Handshake,
   MapPin,
   PackageCheck,
   ShieldCheck,
   Star,
   Truck,
-  Users,
   Wrench,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsletter } from "@/components/home-newsletter";
 import { company } from "@/lib/company";
+import { guideTopics } from "@/lib/guide-achat";
 import { formatMileage, formatPrice, vehicles } from "@/lib/vehicles";
+
+const guideIcons = {
+  acheter: Car,
+  importer: Globe,
+  documents: FileText,
+  livraison: Truck,
+  frais: Calculator,
+} as const;
 
 const heroVisual = {
   src: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1600&q=80",
@@ -114,11 +124,6 @@ const reviews = [
     text: "Bon accompagnement pour le financement. Véhicule propre, prêt le jour J.",
   },
 ] as const;
-
-const aboutImage = {
-  src: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1400&q=80",
-  alt: "Atelier garage — préparation véhicule",
-};
 
 export default function HomePage() {
   const available = vehicles.filter((v) => v.status !== "Réservé").slice(0, 6);
@@ -431,65 +436,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. À propos */}
+      {/* 7. Guide d’achat */}
       <section
-        id="a-propos"
+        id="guide-achat"
         className="scroll-mt-28 border-y border-[#dce3ee] bg-white py-16 lg:py-20"
       >
-        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-14 lg:px-8">
-          <div className="relative aspect-[5/4] overflow-hidden rounded-xl bg-navy">
-            <Image
-              src={aboutImage.src}
-              alt={aboutImage.alt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 560px"
-            />
-          </div>
-          <div>
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-              {company.brand}
+              Accompagnement
             </p>
             <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
-              À propos
+              Guide d’achat
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[#5a6b80]">
-              Créé en 2026 par {company.legalName}, {company.brand} est un garage
-              multi-marques basé au {company.address.full}. Notre métier :
-              sélectionner des occasions propres, les préparer, et accompagner
-              l’achat jusqu’à la livraison.
+              Les repères essentiels avant de vous engager : achat, importation,
+              démarches, livraison et financement — expliqués simplement.
             </p>
-            <ul className="mt-8 space-y-5">
-              <li className="flex gap-3">
-                <Users className="mt-0.5 size-5 shrink-0 text-orange" aria-hidden />
-                <div>
-                  <p className="font-display font-bold text-navy">Équipe</p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#5a6b80]">
-                    Un contact direct, sans call-center : on connaît le stock et
-                    l’historique de chaque dossier.
+          </div>
+          <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {guideTopics.map((topic) => {
+              const Icon = guideIcons[topic.id];
+              return (
+                <li
+                  key={topic.id}
+                  className="border-t-[3px] border-orange pt-5"
+                >
+                  <Icon className="size-6 text-orange" aria-hidden />
+                  <h3 className="mt-4 font-display text-lg font-bold text-navy">
+                    {topic.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#5a6b80]">
+                    {topic.summary}
                   </p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <Wrench className="mt-0.5 size-5 shrink-0 text-orange" aria-hidden />
-                <div>
-                  <p className="font-display font-bold text-navy">Atelier</p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#5a6b80]">
-                    Préparation avant livraison, points de contrôle et mise au
-                    propre — pas de showcase luxe.
-                  </p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <Handshake className="mt-0.5 size-5 shrink-0 text-orange" aria-hidden />
-                <div>
-                  <p className="font-display font-bold text-navy">Valeurs</p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#5a6b80]">
-                    Transparence, prix nets, et suivi jusqu’à la remise des clés.
-                  </p>
-                </div>
-              </li>
-            </ul>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="mt-10">
+            <Link
+              href="/guide-achat"
+              className="inline-flex h-12 items-center rounded-lg bg-orange px-6 text-sm font-bold text-white transition-colors hover:bg-[#e05f00]"
+            >
+              Consulter le guide d&apos;achat
+            </Link>
           </div>
         </div>
       </section>

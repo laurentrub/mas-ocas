@@ -55,8 +55,8 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white" href="/#a-propos">
-                À propos
+              <Link className="hover:text-white" href="/guide-achat">
+                Guide d’achat
               </Link>
             </li>
             <li>

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/stock", label: "Acheter" },
+  { href: "/guide-achat", label: "Guide d’achat" },
   { href: "/#financement", label: "Financement" },
   { href: "/#livraison", label: "Livraison" },
   { href: "/contact", label: "Contact" },
@@ -141,9 +142,11 @@ export function SiteHeader() {
               const active =
                 link.href.startsWith("/stock")
                   ? pathname.startsWith("/stock")
-                  : link.href.startsWith("/contact") && !link.href.includes("Reprise")
-                    ? pathname.startsWith("/contact")
-                    : false;
+                  : link.href.startsWith("/guide-achat")
+                    ? pathname.startsWith("/guide-achat")
+                    : link.href.startsWith("/contact") && !link.href.includes("Reprise")
+                      ? pathname.startsWith("/contact")
+                      : false;
               return (
                 <Link
                   key={link.href}
