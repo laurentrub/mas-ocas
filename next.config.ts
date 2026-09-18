@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/stock/:slug",
+        destination: "/vehicules/:slug",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

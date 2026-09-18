@@ -30,7 +30,7 @@ Le script `dev` utilise webpack + file polling (évite les erreurs `EMFILE: too 
 
 - `/` — accueil (hero marque + sections)
 - `/stock` — liste du stock (données mock)
-- `/stock/[slug]` — fiche véhicule
+- `/vehicules/[slug]` — fiche véhicule (SEO + conversion) ; `/stock/[slug]` redirige en 308
 - `/guide-achat` — hub SEO Guide d’achat
 - `/guide-achat/[slug]` — articles (achat, import, export, démarches, etc.)
 - `/contact` — demande d’information

@@ -19,7 +19,12 @@ import { HomeNewsletter } from "@/components/home-newsletter";
 import { company } from "@/lib/company";
 import { homepageGuideTopics } from "@/lib/guide-achat";
 import { guideIcons } from "@/lib/guide-icons";
-import { formatMileage, formatPrice, vehicles } from "@/lib/vehicles";
+import {
+  formatMileage,
+  formatPrice,
+  vehiclePath,
+  vehicles,
+} from "@/lib/vehicles";
 
 const heroVisual = {
   src: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1600&q=80",
@@ -217,7 +222,7 @@ export default function HomePage() {
               <li key={vehicle.slug}>
                 <article className="group">
                   <Link
-                    href={`/stock/${vehicle.slug}`}
+                    href={vehiclePath(vehicle.slug)}
                     className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
                   >
                     <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-navy">
@@ -255,7 +260,7 @@ export default function HomePage() {
                     </div>
                   </Link>
                   <Link
-                    href={`/stock/${vehicle.slug}`}
+                    href={vehiclePath(vehicle.slug)}
                     className="mt-4 inline-flex h-10 items-center rounded-md bg-navy px-4 text-sm font-semibold text-white transition-colors hover:bg-orange"
                   >
                     Voir le véhicule

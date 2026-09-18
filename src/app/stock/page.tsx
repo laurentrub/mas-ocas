@@ -5,6 +5,7 @@ import {
   filterVehicles,
   formatMileage,
   formatPrice,
+  vehiclePath,
 } from "@/lib/vehicles";
 
 export const metadata: Metadata = {
@@ -70,7 +71,7 @@ export default async function StockPage({ searchParams }: Props) {
           {list.map((vehicle) => (
             <li key={vehicle.slug}>
               <Link
-                href={`/stock/${vehicle.slug}`}
+                href={vehiclePath(vehicle.slug)}
                 className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
               >
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-navy">

@@ -141,7 +141,8 @@ export function SiteHeader() {
             {navLinks.map((link) => {
               const active =
                 link.href.startsWith("/stock")
-                  ? pathname.startsWith("/stock")
+                  ? pathname.startsWith("/stock") ||
+                    pathname.startsWith("/vehicules")
                   : link.href.startsWith("/guide-achat")
                     ? pathname.startsWith("/guide-achat")
                     : link.href.startsWith("/contact") && !link.href.includes("Reprise")
