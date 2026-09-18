@@ -199,12 +199,9 @@ export default async function VehicleDetailPage({ params }: Props) {
           className="mt-14 border-t border-[#dce3ee] pt-10"
           aria-labelledby="specs-heading"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-            Technique
-          </p>
           <h2
             id="specs-heading"
-            className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
+            className="font-display text-2xl font-extrabold text-navy sm:text-3xl"
           >
             Caractéristiques
           </h2>
@@ -224,12 +221,9 @@ export default async function VehicleDetailPage({ params }: Props) {
 
         {/* Équipements */}
         <section className="mt-14" aria-labelledby="equip-heading">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-            Dotation
-          </p>
           <h2
             id="equip-heading"
-            className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
+            className="font-display text-2xl font-extrabold text-navy sm:text-3xl"
           >
             Équipements
           </h2>
@@ -290,12 +284,9 @@ export default async function VehicleDetailPage({ params }: Props) {
           <section className="mt-14" aria-labelledby="similar-heading">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-                  Continuer
-                </p>
                 <h2
                   id="similar-heading"
-                  className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
+                  className="font-display text-2xl font-extrabold text-navy sm:text-3xl"
                 >
                   Véhicules similaires
                 </h2>
