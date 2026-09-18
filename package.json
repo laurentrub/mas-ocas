@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "WATCHPACK_POLLING=true next dev --webpack --port 43127 --hostname 127.0.0.1",
+    "dev:turbo": "next dev --turbopack --port 43127 --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
