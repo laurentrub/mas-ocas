@@ -77,9 +77,7 @@ export default async function VehicleDetailPage({ params }: Props) {
   const similar = getSimilarVehicles(vehicle, 4);
   const jsonLd = buildVehicleJsonLd(vehicle);
   const faqItems = vehicleFaqItems(vehicle);
-  const warrantyLine =
-    vehicle.warrantyNote ??
-    "Garantie adaptée au véhicule — durée et périmètre confirmés à la vente.";
+  const warrantyNote = vehicle.warrantyNote?.trim() || undefined;
 
   const galleryImages = [
     { src: vehicle.image, alt: vehicle.imageAlt },
@@ -161,10 +159,15 @@ export default async function VehicleDetailPage({ params }: Props) {
               {formatMileage(vehicle.mileage)} · {vehicle.fuel} ·{" "}
               {vehicle.transmission} · {vehicle.power}
             </p>
-            <p className="mt-2 flex items-start gap-1.5 text-sm text-navy">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-orange" aria-hidden />
-              <span>{warrantyLine}</span>
-            </p>
+            {warrantyNote ? (
+              <p className="mt-2 flex items-start gap-1.5 text-sm text-navy">
+                <ShieldCheck
+                  className="mt-0.5 size-4 shrink-0 text-orange"
+                  aria-hidden
+                />
+                <span>{warrantyNote}</span>
+              </p>
+            ) : null}
 
             <div className="mt-8 grid gap-3">
               <Link
@@ -467,33 +470,26 @@ export default async function VehicleDetailPage({ params }: Props) {
           </div>
         </section>
 
-        {/* Garantie — sans durée inventée */}
-        <section className="mt-14" aria-labelledby="warranty-heading">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-            Sérénité
-          </p>
-          <h2
-            id="warranty-heading"
-            className="mt-2 font-display text-2xl font-extrabold text-navy sm:text-3xl"
-          >
-            Garantie
-          </h2>
-          <div className="mt-5 flex gap-3 rounded-xl border border-[#d0d9e6] bg-white p-5">
-            <ShieldCheck className="mt-0.5 size-6 shrink-0 text-orange" aria-hidden />
-            <p className="text-[15px] leading-relaxed text-[#5a6b80]">
-              {vehicle.warrantyNote ? (
-                vehicle.warrantyNote
-              ) : (
-                <>
-                  Une garantie adaptée au véhicule est proposée et expliquée
-                  clairement avant signature. La durée et le périmètre exacts
-                  sont confirmés au moment de la vente — aucune durée n’est
-                  inventée sur cette fiche.
-                </>
-              )}
-            </p>
-          </div>
-        </section>
+        {/* Garantie — uniquement si renseignée à l’ajout (texte libre) */}
+        {warrantyNote ? (
+          <section className="mt-14" aria-labelledby="warranty-heading">
+            <h2
+              id="warranty-heading"
+              className="font-display text-2xl font-extrabold text-navy sm:text-3xl"
+            >
+              Garantie
+            </h2>
+            <div className="mt-5 flex gap-3 rounded-xl border border-[#d0d9e6] bg-white p-5">
+              <ShieldCheck
+                className="mt-0.5 size-6 shrink-0 text-orange"
+                aria-hidden
+              />
+              <p className="text-[15px] leading-relaxed text-[#5a6b80]">
+                {warrantyNote}
+              </p>
+            </div>
+          </section>
+        ) : null}
 
         {/* FAQ */}
         <section className="mt-14" aria-labelledby="faq-heading">

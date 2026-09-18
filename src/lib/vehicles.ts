@@ -54,8 +54,9 @@ export type Vehicle = {
   /** Origine / import — section masquée si absent */
   importOrigin?: VehicleImportOrigin;
   /**
-   * Mention de garantie factuelle (sans durée inventée).
-   * Section masquée si absent.
+   * Garantie saisie à l’ajout du véhicule — texte libre tel quel
+   * (ex. « Garantie 2 ans », « Extension de garantie »).
+   * Chip + section masqués si vide / absent. Ne jamais inventer de durée.
    */
   warrantyNote?: string;
   image: string;
@@ -116,6 +117,7 @@ export const vehicles: Vehicle[] = [
       maintenanceUpToDate: true,
       inspected: true,
     },
+    warrantyNote: "Garantie 2 ans",
     image:
       "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1600&q=80",
     imageAlt: "SUV familial gris stationné en extérieur",
@@ -165,6 +167,7 @@ export const vehicles: Vehicle[] = [
       preparedForDelivery: true,
       inspected: true,
     },
+    warrantyNote: "Extension de garantie",
     image:
       "https://images.unsplash.com/photo-1609521263047-f8f205293f24?auto=format&fit=crop&w=1600&q=80",
     imageAlt: "Citadine blanche vue de trois-quarts avant",
@@ -230,13 +233,12 @@ export const vehicles: Vehicle[] = [
     description:
       "Yaris Hybrid Design quasi neuve : fiabilité Toyota, idéale pour un premier véhicule ou un second foyer.",
     editorial:
-      "Toyota Yaris Hybrid Design (2023), 18 650 km uniquement. Hybride automatique 116 ch, finition Design : profil quasi neuf pour un premier véhicule ou un second foyer. Une garantie constructeur restante est indiquée sur le dossier — la durée exacte est confirmée au moment de la vente, sans engagement inventé ici.",
+      "Toyota Yaris Hybrid Design (2023), 18 650 km uniquement. Hybride automatique 116 ch, finition Design : profil quasi neuf pour un premier véhicule ou un second foyer. Contactez MAS OCAS AUTO pour confirmer la disponibilité, organiser un essai ou demander une livraison.",
     features: [
       "Toyota Safety Sense",
       "Caméra de recul",
       "Chargeur induction",
       "Sièges tissu/synthétique",
-      "Garantie constructeur restante",
     ],
     equipmentCategories: [
       {
@@ -252,8 +254,7 @@ export const vehicles: Vehicle[] = [
       inspected: true,
       preparedForDelivery: true,
     },
-    warrantyNote:
-      "Garantie constructeur restante indiquée au dossier — durée et couverture confirmées à la vente.",
+    warrantyNote: "Garantie constructeur restante",
     image:
       "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=80",
     imageAlt: "Citadine compacte en lumière du jour",
@@ -299,6 +300,7 @@ export const vehicles: Vehicle[] = [
       inspected: true,
       documentsReady: true,
     },
+    warrantyNote: "Garantie 1 an",
     image:
       "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1600&q=80",
     imageAlt: "Berline compacte grise stationnée",
@@ -346,6 +348,7 @@ export const vehicles: Vehicle[] = [
     preparation: {
       inspected: true,
     },
+    warrantyNote: "Garantie 2 ans pièces et main-d'œuvre",
     image:
       "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1600&q=80",
     imageAlt: "Véhicule familial blanc sur route",

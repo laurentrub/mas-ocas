@@ -132,7 +132,7 @@ export function contactVehicleHref(
 }
 
 export function vehicleSpecs(vehicle: Vehicle) {
-  return [
+  const specs = [
     { label: "Année", value: String(vehicle.year) },
     { label: "Kilométrage", value: formatMileage(vehicle.mileage) },
     { label: "Énergie", value: vehicle.fuel },
@@ -144,4 +144,9 @@ export function vehicleSpecs(vehicle: Vehicle) {
     { label: "Prix", value: formatPrice(vehicle.price) },
     { label: "Statut", value: vehicle.status },
   ];
+  const garantie = vehicle.warrantyNote?.trim();
+  if (garantie) {
+    specs.push({ label: "Garantie", value: garantie });
+  }
+  return specs;
 }
