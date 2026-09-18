@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/stock", label: "Acheter" },
-  { href: "/contact?sujet=Reprise", label: "Vendre" },
+  { href: "/#financement", label: "Financement" },
   { href: "/#livraison", label: "Livraison" },
   { href: "/contact", label: "Contact" },
 ];

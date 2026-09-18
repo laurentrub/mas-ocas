@@ -28,7 +28,11 @@ export function ContactForm() {
       ? `Bonjour,\n\nJe souhaite des informations sur le véhicule suivant : ${vehiculeParam}.\n\nCordialement`
       : sujetParam === "Reprise"
         ? "Bonjour,\n\nJe souhaite une estimation pour une reprise de véhicule.\n\nCordialement"
-        : "",
+        : sujetParam === "Financement"
+          ? "Bonjour,\n\nJe souhaite faire une simulation de financement.\n\nCordialement"
+          : sujetParam === "Livraison"
+            ? "Bonjour,\n\nJe souhaite un devis de livraison pour un véhicule.\n\nCordialement"
+            : "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"

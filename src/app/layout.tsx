@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Archivo, Outfit } from "next/font/google";
+import "@fontsource/archivo/600.css";
+import "@fontsource/archivo/700.css";
+import "@fontsource/archivo/800.css";
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { company } from "@/lib/company";
 import "./globals.css";
-
-const display = Archivo({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
-
-const body = Outfit({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -29,11 +24,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="fr"
-      className={`${display.variable} ${body.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">
+    <html lang="fr" className="h-full antialiased">
+      <body className="flex min-h-full flex-col font-body">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
