@@ -373,6 +373,10 @@ export default function HomePage() {
           >
             Faire une simulation
           </Link>
+          <p className="mt-6 max-w-2xl text-xs leading-relaxed text-white/50">
+            Un crédit vous engage et doit être remboursé. Vérifiez vos capacités
+            de remboursement avant de vous engager.
+          </p>
         </div>
       </section>
 
