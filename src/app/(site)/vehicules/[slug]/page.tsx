@@ -24,27 +24,25 @@ import {
   formatMileage,
   formatPrice,
   getSimilarVehicles,
-  getVehicle,
   preparationFlags,
   vehicleDisplayName,
   vehicleEditorial,
   vehiclePath,
   vehicleSeoDescription,
   vehicleSeoTitle,
-  vehicles,
 } from "@/lib/vehicles";
+import {
+  getVehicleBySlugFromDb,
+  listVehiclesFromDb,
+} from "@/lib/vehicles-db";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return vehicles.map((v) => ({ slug: v.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const vehicle = getVehicle(slug);
+  const { vehicle } = await getVehicleBySlugFromDb(slug);
   if (!vehicle) return { title: "Véhicule introuvable" };
 
   const title = vehicleSeoTitle(vehicle);
@@ -67,14 +65,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VehicleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const vehicle = getVehicle(slug);
+  const [{ vehicle }, { vehicles: pool }] = await Promise.all([
+    getVehicleBySlugFromDb(slug),
+    listVehiclesFromDb(),
+  ]);
   if (!vehicle) notFound();
 
   const name = vehicleDisplayName(vehicle);
   const editorial = vehicleEditorial(vehicle);
   const specs = vehicleSpecs(vehicle);
   const prep = preparationFlags(vehicle.preparation);
-  const similar = getSimilarVehicles(vehicle, 4);
+  const similar = getSimilarVehicles(vehicle, 4, pool);
   const jsonLd = buildVehicleJsonLd(vehicle);
   const faqItems = vehicleFaqItems(vehicle);
   const warrantyNote = vehicle.warrantyNote?.trim() || undefined;
@@ -183,7 +184,7 @@ export default async function VehicleDetailPage({ params }: Props) {
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-navy/20 bg-white text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
                 >
                   <Truck className="size-4" aria-hidden />
-                  Devis livraison
+                  Demande de livraison
                 </Link>
                 <Link
                   href={ctaFinance}
@@ -414,16 +415,17 @@ export default async function VehicleDetailPage({ params }: Props) {
             Financement
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75">
-            Une simulation est possible pour ce {name} avec nos partenaires de
-            crédit auto. Aucun taux ni mensualité n’est affiché sans étude de
-            dossier — nous clarifions les options avant engagement.
+            Étude gratuite multi-financeurs pour ce {name} : crédit, LOA ou LLD,
+            particuliers et professionnels, y compris clients européens.
+            Simulation indicative — l’offre définitive dépend de nos partenaires
+            bancaires.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href={ctaFinance}
               className="inline-flex h-11 items-center rounded-lg bg-orange px-5 text-sm font-bold text-white hover:bg-[#e05f00]"
             >
-              Demander une simulation
+              Obtenir la meilleure offre
             </Link>
             <Link
               href="/guide-achat/financer-vehicule"
@@ -529,7 +531,7 @@ export default async function VehicleDetailPage({ params }: Props) {
               className="inline-flex h-12 items-center gap-2 rounded-lg border border-navy/20 px-6 text-sm font-bold text-navy hover:border-orange hover:text-orange"
             >
               <Truck className="size-4" aria-hidden />
-              Devis livraison
+              Demande de livraison
             </Link>
             <Link
               href={ctaFinance}
@@ -581,6 +583,7 @@ export default async function VehicleDetailPage({ params }: Props) {
       </div>
 
       <VehicleStickyCta
+        vehicleSlug={vehicle.slug}
         vehicleLabel={name}
         priceLabel={formatPrice(vehicle.price)}
       />

@@ -62,9 +62,28 @@ export function ContactForm() {
     e.preventDefault();
     if (!canSubmit) return;
     setStatus("sending");
-    // Frontend-only slice: simulate envoi réussi
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("sent");
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          interest: form.interest,
+          message: form.message.trim(),
+          sujet: sujetParam,
+          vehicle_slug: vehiculeParam || undefined,
+        }),
+      });
+      if (!res.ok) {
+        setStatus("error");
+        return;
+      }
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   }
 
   if (status === "sent") {
@@ -189,8 +208,8 @@ export function ContactForm() {
         {status === "sending" ? "Envoi…" : "Envoyer la demande"}
       </Button>
       <p className="text-xs text-muted-foreground">
-        Formulaire vitrine : aucun envoi serveur dans cette version. Vos données
-        restent dans le navigateur.
+        Vos coordonnées sont transmises à MAS OCAS AUTO pour traiter votre
+        demande. Pas d’usage commercial hors de ce contact.
       </p>
     </form>
   );

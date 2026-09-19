@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  filterVehicles,
   formatMileage,
   formatPrice,
   vehiclePath,
 } from "@/lib/vehicles";
+import {
+  filterVehicleList,
+  listVehiclesFromDb,
+} from "@/lib/vehicles-db";
 
 export const metadata: Metadata = {
   title: "Stock véhicules",
@@ -20,7 +23,8 @@ type Props = {
 
 export default async function StockPage({ searchParams }: Props) {
   const params = await searchParams;
-  const list = filterVehicles(params);
+  const { vehicles: all } = await listVehiclesFromDb();
+  const list = filterVehicleList(all, params);
   const hasFilters = Boolean(params.q || params.budget || params.km);
 
   return (

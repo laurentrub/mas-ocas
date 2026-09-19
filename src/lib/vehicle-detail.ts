@@ -127,6 +127,15 @@ export function contactVehicleHref(
   vehicle: Vehicle,
   sujet?: "Financement" | "Livraison" | "Rappel" | "Rendez-vous"
 ) {
+  if (sujet === "Rendez-vous") {
+    return `/demande/visite/${vehicle.slug}`;
+  }
+  if (sujet === "Livraison") {
+    return `/demande/livraison/${vehicle.slug}`;
+  }
+  if (sujet === "Financement") {
+    return `/demande/financement/${vehicle.slug}`;
+  }
   const base = `/contact?vehicule=${encodeURIComponent(vehicleDisplayName(vehicle))}`;
   return sujet ? `${base}&sujet=${encodeURIComponent(sujet)}` : base;
 }

@@ -7,8 +7,6 @@ import "@fontsource/outfit/400.css";
 import "@fontsource/outfit/500.css";
 import "@fontsource/outfit/600.css";
 import "@fontsource/outfit/700.css";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { company } from "@/lib/company";
 import "./globals.css";
 
@@ -22,14 +20,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(`https://${company.domain}`),
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" className="h-full antialiased">
-      <body className="flex min-h-full flex-col font-body">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-      </body>
+      <body className="flex min-h-full flex-col font-body">{children}</body>
     </html>
   );
 }

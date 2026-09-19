@@ -23,8 +23,8 @@ import {
   formatMileage,
   formatPrice,
   vehiclePath,
-  vehicles,
 } from "@/lib/vehicles";
+import { listVehiclesFromDb } from "@/lib/vehicles-db";
 
 const heroVisual = {
   src: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1600&q=80",
@@ -121,7 +121,8 @@ const reviews = [
   },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { vehicles } = await listVehiclesFromDb();
   const available = vehicles.filter((v) => v.status !== "Réservé").slice(0, 6);
 
   return (

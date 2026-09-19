@@ -414,8 +414,12 @@ export function preparationFlags(
 }
 
 /** 3–4 véhicules similaires (même énergie ou marque, sinon prix proche). */
-export function getSimilarVehicles(vehicle: Vehicle, limit = 4): Vehicle[] {
-  const others = vehicles.filter((v) => v.slug !== vehicle.slug);
+export function getSimilarVehicles(
+  vehicle: Vehicle,
+  limit = 4,
+  pool: Vehicle[] = vehicles
+): Vehicle[] {
+  const others = pool.filter((v) => v.slug !== vehicle.slug);
   const scored = others.map((v) => {
     let score = 0;
     if (v.fuel === vehicle.fuel) score += 3;
