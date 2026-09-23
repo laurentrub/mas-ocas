@@ -96,7 +96,7 @@ export const vehicles: Vehicle[] = [
     description:
       "Peugeot 5008 GT 1.5 BlueHDi 130 ch EAT8 (2022), 140 000 km. Diesel automatique, 7 places, finition GT. Prix annoncé TTC export : 8 800 €.",
     editorial:
-      "Peugeot 5008 — version constructeur 5008 1.5 BlueHDi 130ch S&S GT EAT8. Année modèle 2022, première mise en circulation 12/2022, 140 000 km, diesel, boîte automatique, 5 portes, 7 places ou plus, couleur noir (intérieur Grey), Crit’Air 2, puissance fiscale 7 CV. Prix TTC export annoncé : 8 800 €. Contact Facebook page : +33 7 70 07 82 98 · contact@bmstracroutier.com.",
+      "Peugeot 5008 — version constructeur 5008 1.5 BlueHDi 130ch S&S GT EAT8. Année modèle 2022, première mise en circulation 12/2022, 140 000 km, diesel, boîte automatique, 5 portes, 7 places ou plus, couleur noir (intérieur Grey), Crit’Air 2, puissance fiscale 7 CV. Prix TTC export annoncé : 8 800 €.",
     features: [
       "Assistant de parking arrière",
       "Airbags frontal et latéral",
