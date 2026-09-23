@@ -8,6 +8,10 @@ import type { VehicleRow } from "@/lib/supabase/database.types";
 import { vehicles as mockVehicles } from "@/lib/vehicles";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import {
+  isHeavyVehicle,
+  vehicleMatchesCategory,
+} from "@/lib/vehicle-categories";
 
 function asCategories(value: unknown): EquipmentCategory[] | undefined {
   if (!Array.isArray(value)) return undefined;
@@ -153,13 +157,15 @@ export async function getVehicleBySlugFromDb(
 
 export function filterVehicleList(
   list: Vehicle[],
-  params: { q?: string; budget?: string; km?: string }
+  params: { q?: string; budget?: string; km?: string; cat?: string; sub?: string }
 ) {
   const q = params.q?.trim().toLowerCase();
   const budget = params.budget ? Number(params.budget) : undefined;
   const km = params.km ? Number(params.km) : undefined;
 
   return list.filter((v) => {
+    if (isHeavyVehicle(v)) return false;
+    if (!vehicleMatchesCategory(v, params.cat, params.sub)) return false;
     if (q) {
       const hay = `${v.brand} ${v.model} ${v.highlight} ${v.description}`.toLowerCase();
       if (!hay.includes(q)) return false;
