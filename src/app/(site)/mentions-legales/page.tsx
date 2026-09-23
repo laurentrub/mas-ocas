@@ -36,6 +36,25 @@ export default function MentionsLegalesPage() {
             <strong>Immatriculation :</strong> {company.rcs.label}
           </li>
           <li>
+            <strong>SIREN :</strong> {company.siren}
+          </li>
+          {company.siret ? (
+            <li>
+              <strong>SIRET :</strong> {company.siret}
+            </li>
+          ) : null}
+          {company.ape.code ? (
+            <li>
+              <strong>Code APE :</strong> {company.ape.code}
+              {company.ape.label ? ` — ${company.ape.label}` : ""}
+            </li>
+          ) : null}
+          {company.vatNumber ? (
+            <li>
+              <strong>N° TVA intracommunautaire :</strong> {company.vatNumber}
+            </li>
+          ) : null}
+          <li>
             <strong>N° de gestion :</strong> {company.managementNumber}
           </li>
           <li>
@@ -71,9 +90,19 @@ export default function MentionsLegalesPage() {
       <LegalSection title="Activité">
         <p>{company.activity}.</p>
         <p className="text-muted-foreground">
-          Mode d&apos;exploitation : exploitation personnelle · Origine :
-          création.
+          Mode d&apos;exploitation : {company.exploitationMode.toLowerCase()} ·
+          Origine : {company.fundOrigin.toLowerCase()}.
         </p>
+      </LegalSection>
+
+      <LegalSection title="Financement / ORIAS">
+        {company.orias.registered && company.orias.number ? (
+          <p>
+            Inscrit à l&apos;ORIAS sous le n° {company.orias.number}.
+          </p>
+        ) : (
+          <p>{company.orias.note}</p>
+        )}
       </LegalSection>
 
       <LegalSection title="Hébergement">

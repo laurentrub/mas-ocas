@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice, formatMileage } from "@/lib/vehicles";
-import { FbImportButton } from "@/components/admin/fb-import-button";
 
 export default async function AdminStockPage() {
   const supabase = await createClient();
@@ -21,15 +20,12 @@ export default async function AdminStockPage() {
             {vehicles?.length ?? 0} véhicule{(vehicles?.length ?? 0) > 1 ? "s" : ""}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <FbImportButton />
-          <Link
-            href="/admin/stock/new"
-            className="inline-flex h-8 items-center rounded-lg bg-orange px-3 text-sm font-medium text-white"
-          >
-            Ajouter
-          </Link>
-        </div>
+        <Link
+          href="/admin/stock/new"
+          className="inline-flex h-8 items-center rounded-lg bg-orange px-3 text-sm font-medium text-white"
+        >
+          Ajouter
+        </Link>
       </div>
 
       <div className="overflow-x-auto border border-[#d0d9e6] bg-white">
@@ -70,7 +66,7 @@ export default async function AdminStockPage() {
             {!vehicles?.length ? (
               <tr>
                 <td colSpan={6} className="px-4 py-10 text-center text-[#5a6b80]">
-                  Aucun véhicule. Ajoutez-en un ou importez depuis Facebook.
+                  Aucun véhicule. Cliquez sur Ajouter pour en créer un.
                 </td>
               </tr>
             ) : null}

@@ -53,7 +53,9 @@ export default async function NewCommandePage({ searchParams }: Props) {
 
   const installmentDefault =
     details?.kind === "financement"
-      ? details.installments ?? 1
+      ? details.installments && [2, 3, 4].includes(details.installments)
+        ? details.installments
+        : 1
       : 1;
 
   const deliveryDefault =
@@ -234,6 +236,19 @@ export default async function NewCommandePage({ searchParams }: Props) {
                 Ajoutez d’abord un RIB dans /admin/rib.
               </p>
             ) : null}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="delivery_date">Date de livraison prévue</Label>
+            <Input
+              id="delivery_date"
+              name="delivery_date"
+              type="date"
+              defaultValue={
+                details?.kind === "livraison" && details.preferred_date
+                  ? details.preferred_date
+                  : ""
+              }
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="delivery_place">Lieu de livraison / remise</Label>

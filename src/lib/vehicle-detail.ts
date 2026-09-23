@@ -5,7 +5,7 @@ import {
   vehicleDisplayName,
   vehiclePath,
 } from "@/lib/vehicles";
-import { company } from "@/lib/company";
+import { company, companyTelHref } from "@/lib/company";
 
 export function buildVehicleJsonLd(vehicle: Vehicle) {
   const name = vehicleDisplayName(vehicle);
@@ -23,7 +23,7 @@ export function buildVehicleJsonLd(vehicle: Vehicle) {
         "@id": `https://${company.domain}/#organization`,
         name: company.brand,
         url: `https://${company.domain}`,
-        telephone: company.phone,
+        ...(companyTelHref() ? { telephone: company.phone } : {}),
         email: company.email,
         address: {
           "@type": "PostalAddress",
@@ -99,7 +99,7 @@ export function vehicleFaqItems(vehicle: Vehicle) {
   return [
     {
       question: `Ce ${name} est-il toujours disponible ?`,
-      answer: `Le statut affiché est « ${vehicle.status} ». Confirmez la disponibilité auprès de ${company.brand} par téléphone (${company.phone}) ou via le formulaire de contact — le stock évolue rapidement.`,
+      answer: `Le statut affiché est « ${vehicle.status} ». Confirmez la disponibilité auprès de ${company.brand}${companyTelHref() ? ` par téléphone (${company.phone})` : ""} ou via le formulaire de contact — le stock évolue rapidement.`,
     },
     {
       question: "Puis-je essayer ce véhicule au Mans ?",

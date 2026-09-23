@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { LeadType } from "@/lib/supabase/database.types";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import type { LeadDetails } from "@/lib/demandes";
+import { isHoneypotFilled, isLeadRateLimited } from "@/lib/lead-spam";
 
 function mapSujetToType(sujet: string, interest: string, type?: string): LeadType {
   if (type === "visite" || type === "livraison" || type === "financement") {
@@ -73,7 +74,23 @@ export async function POST(request: Request) {
     type?: string;
     vehicle_slug?: string;
     details?: unknown;
+    /** Honeypot — must stay empty. */
+    website?: string;
   };
+
+  // Soft OK for bots that fill the honeypot (avoid teaching them).
+  if (isHoneypotFilled(body.website)) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+  if (isLeadRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Trop de demandes. Réessayez dans une minute." },
+      { status: 429 }
+    );
+  }
 
   const name = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();

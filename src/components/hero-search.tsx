@@ -148,7 +148,7 @@ export function HeroSearch() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/contact?sujet=Reprise")}
+              onClick={() => router.push("/reprise")}
               className="inline-flex h-14 items-center justify-center gap-2 rounded-lg bg-orange px-7 text-base font-bold text-white transition-colors hover:bg-[#e05f00]"
             >
               Estimer ma reprise

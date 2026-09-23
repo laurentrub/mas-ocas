@@ -103,6 +103,8 @@ export const STOCK_NAV: NavItem[] = [
 export const SECONDARY_NAV: { href: string; label: string }[] = [
   { href: "/financement", label: "Financement" },
   { href: "/livraison", label: "Livraison" },
+  { href: "/reprise", label: "Reprise" },
+  { href: "/a-propos", label: "Le garage" },
 ];
 
 const CATEGORY_LABELS: Record<VehicleCategoryId, string> = {

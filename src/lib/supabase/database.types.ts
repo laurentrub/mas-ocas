@@ -159,6 +159,8 @@ type Tables = {
       vehicle_id: string | null;
       vehicle_slug: string | null;
       details: Json | null;
+      notes: string | null;
+      assigned_to: string | null;
       created_at: string;
       updated_at: string;
     };
@@ -174,6 +176,8 @@ type Tables = {
       vehicle_id?: string | null;
       vehicle_slug?: string | null;
       details?: Json | null;
+      notes?: string | null;
+      assigned_to?: string | null;
       created_at?: string;
       updated_at?: string;
     };
@@ -189,6 +193,8 @@ type Tables = {
       vehicle_id?: string | null;
       vehicle_slug?: string | null;
       details?: Json | null;
+      notes?: string | null;
+      assigned_to?: string | null;
       created_at?: string;
       updated_at?: string;
     };

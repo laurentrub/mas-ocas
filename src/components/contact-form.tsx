@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { LeadHoneypot } from "@/components/lead-honeypot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,6 +47,7 @@ export function ContactForm() {
                 ? "Bonjour,\n\nMerci de me rappeler.\n\nCordialement"
                 : "",
   });
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
@@ -74,6 +76,7 @@ export function ContactForm() {
           message: form.message.trim(),
           sujet: sujetParam,
           vehicle_slug: vehiculeParam || undefined,
+          website: honeypot,
         }),
       });
       if (!res.ok) {
@@ -116,7 +119,8 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+    <form onSubmit={onSubmit} className="relative space-y-5" noValidate>
+      <LeadHoneypot value={honeypot} onChange={setHoneypot} />
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">Nom complet</Label>

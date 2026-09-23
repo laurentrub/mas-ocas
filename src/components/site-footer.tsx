@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { company } from "@/lib/company";
+import { company, companyTelHref } from "@/lib/company";
 
 export function SiteFooter() {
   return (
@@ -22,9 +22,13 @@ export function SiteFooter() {
             <p>{company.legalName}</p>
             <p>{company.address.full}</p>
             <p>
-              <a className="hover:text-white" href={`tel:${company.phone.replace(/\s/g, "")}`}>
-                {company.phone}
-              </a>
+              {companyTelHref() ? (
+                <a className="hover:text-white" href={companyTelHref()!}>
+                  {company.phone}
+                </a>
+              ) : (
+                company.phone
+              )}
             </p>
             <p>
               <a className="hover:text-white" href={`mailto:${company.email}`}>
@@ -52,6 +56,16 @@ export function SiteFooter() {
             <li>
               <Link className="hover:text-white" href="/livraison">
                 Livraison
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/reprise">
+                Reprise
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/a-propos">
+                Le garage
               </Link>
             </li>
             <li>

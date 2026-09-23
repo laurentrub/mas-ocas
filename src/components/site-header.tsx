@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, Network, Phone, X } from "lucide-react";
-import { company } from "@/lib/company";
+import { company, companyTelHref } from "@/lib/company";
 import {
   SECONDARY_NAV,
   STOCK_NAV,
@@ -163,13 +163,23 @@ function SiteHeaderInner() {
             <span>Nous contacter</span>
           </Link>
 
-          <a
-            href={`tel:${company.phone.replace(/\s/g, "")}`}
-            className="sm:hidden"
-            aria-label="Appeler"
-          >
-            <Phone className="size-3.5" />
-          </a>
+          {companyTelHref() ? (
+            <a
+              href={companyTelHref()!}
+              className="sm:hidden"
+              aria-label="Appeler"
+            >
+              <Phone className="size-3.5" />
+            </a>
+          ) : (
+            <Link
+              href="/contact"
+              className="sm:hidden"
+              aria-label="Nous contacter"
+            >
+              <Phone className="size-3.5" />
+            </Link>
+          )}
         </div>
       </div>
 

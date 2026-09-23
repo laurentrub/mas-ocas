@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { LeadHoneypot } from "@/components/lead-honeypot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,6 +28,7 @@ export function VisitRequestForm({ vehicleSlug, vehicleLabel }: Props) {
   const [preferredDate, setPreferredDate] = useState(tomorrow);
   const [slot, setSlot] = useState<VisitSlot>("matin");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
@@ -53,6 +55,7 @@ export function VisitRequestForm({ vehicleSlug, vehicleLabel }: Props) {
             preferred_date: preferredDate,
             preferred_slot: slot,
           },
+          website: honeypot,
         }),
       });
       setStatus(res.ok ? "sent" : "error");
@@ -82,7 +85,8 @@ export function VisitRequestForm({ vehicleSlug, vehicleLabel }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} className="relative space-y-5">
+      <LeadHoneypot value={honeypot} onChange={setHoneypot} />
       <p className="rounded-lg bg-mist px-4 py-3 text-sm text-[#5a6b80]">
         Choisissez une date et un créneau souhaités. Un conseiller MAS OCAS AUTO
         vous contactera pour <strong className="text-navy">confirmer</strong> le

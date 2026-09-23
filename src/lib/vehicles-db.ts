@@ -91,11 +91,19 @@ export function vehicleToRow(
   };
 }
 
+/** Mock stock only in local dev — never silently backfill production. */
+function useDevMockVehicles() {
+  return process.env.NODE_ENV === "development";
+}
+
 export async function listVehiclesFromDb(opts?: {
   includeSold?: boolean;
 }): Promise<{ vehicles: Vehicle[]; fromDb: boolean }> {
   if (!isSupabaseConfigured()) {
-    return { vehicles: mockVehicles, fromDb: false };
+    return {
+      vehicles: useDevMockVehicles() ? mockVehicles : [],
+      fromDb: false,
+    };
   }
 
   try {
@@ -110,15 +118,17 @@ export async function listVehiclesFromDb(opts?: {
     }
 
     const { data, error } = await query;
-    if (error || !data?.length) {
-      return { vehicles: mockVehicles, fromDb: false };
+    if (error) {
+      console.error("[vehicles] list failed:", error.message);
+      return { vehicles: [], fromDb: false };
     }
     return {
-      vehicles: data.map(rowToVehicle),
+      vehicles: (data ?? []).map(rowToVehicle),
       fromDb: true,
     };
-  } catch {
-    return { vehicles: mockVehicles, fromDb: false };
+  } catch (err) {
+    console.error("[vehicles] list error:", err);
+    return { vehicles: [], fromDb: false };
   }
 }
 
@@ -127,7 +137,9 @@ export async function getVehicleBySlugFromDb(
 ): Promise<{ vehicle: Vehicle | undefined; fromDb: boolean; id?: string }> {
   if (!isSupabaseConfigured()) {
     return {
-      vehicle: mockVehicles.find((v) => v.slug === slug),
+      vehicle: useDevMockVehicles()
+        ? mockVehicles.find((v) => v.slug === slug)
+        : undefined,
       fromDb: false,
     };
   }
@@ -140,18 +152,17 @@ export async function getVehicleBySlugFromDb(
       .eq("slug", slug)
       .maybeSingle();
 
-    if (error || !data) {
-      return {
-        vehicle: mockVehicles.find((v) => v.slug === slug),
-        fromDb: false,
-      };
+    if (error) {
+      console.error("[vehicles] get by slug failed:", error.message);
+      return { vehicle: undefined, fromDb: false };
+    }
+    if (!data) {
+      return { vehicle: undefined, fromDb: true };
     }
     return { vehicle: rowToVehicle(data), fromDb: true, id: data.id };
-  } catch {
-    return {
-      vehicle: mockVehicles.find((v) => v.slug === slug),
-      fromDb: false,
-    };
+  } catch (err) {
+    console.error("[vehicles] get by slug error:", err);
+    return { vehicle: undefined, fromDb: false };
   }
 }
 

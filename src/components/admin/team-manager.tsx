@@ -128,8 +128,14 @@ export function TeamManager() {
         className="max-w-lg space-y-4 border border-[#d0d9e6] bg-white p-5"
       >
         <h2 className="font-display text-lg font-bold text-navy">
-          Inviter un membre
+          Créer un membre
         </h2>
+        <p className="text-sm text-[#5a6b80]">
+          Crée un compte avec e-mail + mot de passe temporaire. La personne se
+          connecte sur{" "}
+          <span className="font-medium text-navy">/admin/login</span> — pas via
+          un lien d’invitation e-mail.
+        </p>
         <div className="space-y-2">
           <Label htmlFor="team-email">Email</Label>
           <Input

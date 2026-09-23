@@ -1,5 +1,7 @@
-import { updateLeadStatusAction } from "@/app/admin/(dashboard)/actions";
+import { updateLeadAction } from "@/app/admin/(dashboard)/actions";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { listStaffMembers } from "@/lib/admin-staff";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/vehicles";
 import type { LeadDetails } from "@/lib/demandes";
@@ -55,9 +57,6 @@ function LeadDetailsBlock({ details }: { details: LeadDetails | null }) {
             )}
           </p>
         ) : null}
-        <p className="mt-1 text-xs text-[#5a6b80]">
-          Éditer un devis / bon de commande livraison.
-        </p>
       </div>
     );
   }
@@ -82,37 +81,14 @@ function LeadDetailsBlock({ details }: { details: LeadDetails | null }) {
             {details.duration_months} mois · Prix{" "}
             {formatPrice(details.vehicle_price)}
             {typeof details.upfront_amount === "number" ? (
-              <>
-                {" "}
-                · 1ʳᵉ versement {formatPrice(details.upfront_amount)}
-              </>
+              <> · 1ʳᵉ versement {formatPrice(details.upfront_amount)}</>
             ) : null}
             {typeof details.simulated_monthly === "number" ? (
-              <>
-                {" "}
-                · mensualité ≈ {formatPrice(details.simulated_monthly)}
-              </>
+              <> · mensualité ≈ {formatPrice(details.simulated_monthly)}</>
             ) : (
               <> · base capital ≈ {formatPrice(preview.monthly)}/mois</>
             )}
             {details.country ? ` · ${details.country}` : ""}
-          </p>
-          <ul className="mt-2 space-y-0.5 text-xs text-[#5a6b80]">
-            {typeof details.first_monthly_amount === "number" ? (
-              <li>
-                1ʳᵉ mensualité souhaitée :{" "}
-                {formatPrice(details.first_monthly_amount)}
-              </li>
-            ) : null}
-            {details.warranty_extension ? (
-              <li>✓ Extension garantie panne mécanique</li>
-            ) : null}
-            {details.financial_loss_insurance ? (
-              <li>✓ Assurance perte financière</li>
-            ) : null}
-          </ul>
-          <p className="mt-1 text-xs text-[#5a6b80]">
-            Simulation — accord sous réserve des partenaires financiers.
           </p>
         </div>
       );
@@ -142,11 +118,16 @@ function LeadDetailsBlock({ details }: { details: LeadDetails | null }) {
 
 export default async function AdminLeadsPage() {
   const supabase = await createClient();
-  const { data: leads } = await supabase
-    .from("leads")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(200);
+  const [{ data: leads }, staff] = await Promise.all([
+    supabase
+      .from("leads")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200),
+    listStaffMembers(),
+  ]);
+
+  const staffById = new Map(staff.map((s) => [s.userId, s.email]));
 
   return (
     <div className="space-y-6">
@@ -155,13 +136,16 @@ export default async function AdminLeadsPage() {
           Demandes
         </h1>
         <p className="mt-2 text-[#5a6b80]">
-          Visites, livraisons, paiements fractionnés et contacts.
+          Visites, livraisons, financement et contacts.
         </p>
       </header>
 
       <ul className="space-y-3">
         {(leads ?? []).map((lead) => {
           const details = lead.details as LeadDetails | null;
+          const assigneeEmail = lead.assigned_to
+            ? staffById.get(lead.assigned_to)
+            : null;
           return (
             <li
               key={lead.id}
@@ -171,6 +155,7 @@ export default async function AdminLeadsPage() {
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-orange">
                     {lead.type} · {lead.status}
+                    {assigneeEmail ? ` · ${assigneeEmail}` : ""}
                   </p>
                   <p className="mt-1 font-display text-lg font-bold text-navy">
                     {lead.name}
@@ -215,33 +200,58 @@ export default async function AdminLeadsPage() {
                   {lead.message}
                 </p>
               ) : null}
-              <form
-                action={updateLeadStatusAction}
-                className="mt-4 flex flex-wrap items-center gap-2"
-              >
+
+              <form action={updateLeadAction} className="mt-4 space-y-3">
                 <input type="hidden" name="id" value={lead.id} />
-                <select
-                  name="status"
-                  defaultValue={lead.status}
-                  className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
-                >
-                  {statusOptions.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-                <Button type="submit" size="sm" variant="outline">
-                  Mettre à jour
-                </Button>
-                {lead.type === "livraison" || lead.type === "financement" ? (
+                <div className="space-y-1">
+                  <label
+                    htmlFor={`notes-${lead.id}`}
+                    className="text-xs font-semibold uppercase tracking-wide text-[#5a6b80]"
+                  >
+                    Notes internes
+                  </label>
+                  <Textarea
+                    id={`notes-${lead.id}`}
+                    name="notes"
+                    rows={2}
+                    defaultValue={lead.notes ?? ""}
+                    placeholder="Suivi, rappel, contexte…"
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <select
+                    name="status"
+                    defaultValue={lead.status}
+                    className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
+                  >
+                    {statusOptions.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    name="assigned_to"
+                    defaultValue={lead.assigned_to ?? ""}
+                    className="h-8 max-w-[220px] rounded-lg border border-input bg-transparent px-2 text-sm"
+                  >
+                    <option value="">Non assigné</option>
+                    {staff.map((s) => (
+                      <option key={s.userId} value={s.userId}>
+                        {s.email}
+                      </option>
+                    ))}
+                  </select>
+                  <Button type="submit" size="sm" variant="outline">
+                    Enregistrer
+                  </Button>
                   <a
                     href={`/admin/commandes/new?lead=${lead.id}`}
                     className="inline-flex h-7 items-center rounded-lg bg-orange px-2.5 text-xs font-semibold text-white"
                   >
                     Créer un BDC
                   </a>
-                ) : null}
+                </div>
               </form>
             </li>
           );

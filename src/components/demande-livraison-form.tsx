@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { LeadHoneypot } from "@/components/lead-honeypot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ export function DeliveryRequestForm({ vehicleSlug, vehicleLabel }: Props) {
   const [city, setCity] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
@@ -51,6 +53,7 @@ export function DeliveryRequestForm({ vehicleSlug, vehicleLabel }: Props) {
             country: "France",
             preferred_date: preferredDate || undefined,
           },
+          website: honeypot,
         }),
       });
       setStatus(res.ok ? "sent" : "error");
@@ -81,7 +84,8 @@ export function DeliveryRequestForm({ vehicleSlug, vehicleLabel }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} className="relative space-y-5">
+      <LeadHoneypot value={honeypot} onChange={setHoneypot} />
       <p className="rounded-lg bg-mist px-4 py-3 text-sm text-[#5a6b80]">
         Indiquez l’adresse de livraison. Un devis / bon de commande vous sera
         édité et envoyé avant validation.

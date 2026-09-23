@@ -9,15 +9,12 @@ import {
   MapPin,
   PackageCheck,
   ShieldCheck,
-  Star,
   Truck,
   Wrench,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { HeroSlider } from "@/components/hero-slider";
 import { HomeFaq } from "@/components/home-faq";
-import { HomeNewsletter } from "@/components/home-newsletter";
-import { company } from "@/lib/company";
 import { homepageGuideTopics } from "@/lib/guide-achat";
 import { guideIcons } from "@/lib/guide-icons";
 import {
@@ -93,27 +90,6 @@ const financePoints = [
     icon: Calculator,
     title: "Simulation",
     text: "Estimez une mensualité indicative avant de vous engager.",
-  },
-] as const;
-
-const reviews = [
-  {
-    name: "Sophie L.",
-    place: "Le Mans",
-    rating: 5,
-    text: "Clio trouvée rapidement, dossier clair et livraison à domicile sans stress. On recommande.",
-  },
-  {
-    name: "Karim B.",
-    place: "Allonnes",
-    rating: 5,
-    text: "Échange transparent sur l’entretien du 3008. Prix affiché = prix payé, ça change.",
-  },
-  {
-    name: "Nathalie R.",
-    place: "La Flèche",
-    rating: 4,
-    text: "Bon accompagnement pour le financement. Véhicule propre, prêt le jour J.",
   },
 ] as const;
 
@@ -443,67 +419,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8. Avis clients */}
-      <section id="avis" className="scroll-mt-28 bg-[#f4f6f9] py-16 lg:py-20">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-                Témoignages
-              </p>
-              <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
-                Avis clients
-              </h2>
-            </div>
-            <div className="flex items-center gap-2 text-navy">
-              <div className="flex" aria-hidden>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="size-5 fill-orange text-orange"
-                  />
-                ))}
-              </div>
-              <p className="text-sm font-semibold">
-                4,8 / 5 · avis clients (démo)
-              </p>
-            </div>
-          </div>
-          <ul className="mt-10 grid gap-8 md:grid-cols-3">
-            {reviews.map((review) => (
-              <li
-                key={review.name}
-                className="border-t-[3px] border-orange bg-white px-6 py-6 shadow-[0_8px_30px_rgb(12_35_64/0.06)]"
-              >
-                <div className="flex gap-0.5" aria-label={`${review.rating} sur 5`}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={
-                        i < review.rating
-                          ? "size-4 fill-orange text-orange"
-                          : "size-4 text-[#d0d9e6]"
-                      }
-                    />
-                  ))}
-                </div>
-                <p className="mt-4 text-[15px] leading-relaxed text-[#5a6b80]">
-                  « {review.text} »
-                </p>
-                <p className="mt-5 font-display text-sm font-bold text-navy">
-                  {review.name}
-                  <span className="font-normal text-[#7a8a9c]">
-                    {" "}
-                    · {review.place}
-                  </span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 9. FAQ */}
+      {/* 8. FAQ */}
       <section id="faq" className="scroll-mt-28 bg-white py-16 lg:py-20">
         <div className="mx-auto max-w-[800px] px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -527,28 +443,6 @@ export default async function HomePage() {
               Écrivez-nous
             </Link>
           </p>
-        </div>
-      </section>
-
-      {/* 10. Newsletter */}
-      <section
-        id="newsletter"
-        className="scroll-mt-28 border-t border-[#dce3ee] bg-[#f4f6f9] py-16 lg:py-20"
-      >
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange">
-              Arrivages
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
-              Newsletter
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-[#5a6b80]">
-              Recevez les nouveaux véhicules et arrivages {company.brand} — sans
-              spam, juste l’essentiel.
-            </p>
-            <HomeNewsletter />
-          </div>
         </div>
       </section>
     </>

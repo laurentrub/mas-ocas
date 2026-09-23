@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { LeadHoneypot } from "@/components/lead-honeypot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,6 +68,7 @@ export function FinanceRequestForm({
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("France");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
@@ -138,6 +140,7 @@ export function FinanceRequestForm({
             financial_loss_insurance: financialLoss,
             country,
           },
+          website: honeypot,
         }),
       });
       setStatus(res.ok ? "sent" : "error");
@@ -170,7 +173,8 @@ export function FinanceRequestForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8">
+    <form onSubmit={onSubmit} className="relative space-y-8">
+      <LeadHoneypot value={honeypot} onChange={setHoneypot} />
       {/* Widget simulateur */}
       <section
         className="space-y-6 rounded-xl border border-[#d0d9e6] bg-[var(--fin-bg,#fff)] p-4 sm:p-6"

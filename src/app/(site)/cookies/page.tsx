@@ -35,15 +35,9 @@ export default function CookiesPage() {
           consentement.
         </p>
         <p>
-          <strong>Cookies de préférences / mesure d&apos;audience</strong> — le
-          cas échéant, uniquement après votre consentement, pour comprendre
-          l&apos;usage du site de manière agrégée ou mémoriser un choix
-          d&apos;affichage.
-        </p>
-        <p>
-          À ce jour, le site public s&apos;appuie principalement sur des cookies
-          techniques liés à la session et à la sécurité. Aucun réseau
-          publicitaire tiers n&apos;est intégré de façon systématique.
+          Un bandeau d&apos;information présente ces cookies à la première
+          visite. À ce jour, aucun cookie publicitaire ou de mesure d&apos;audience
+          non essentielle n&apos;est déposé.
         </p>
       </LegalSection>
 

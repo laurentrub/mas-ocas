@@ -149,15 +149,15 @@ export function buildInstallmentSchedule(
   const isLong = n >= 24;
 
   return parts.map((amount, i) => ({
-    label: isLong ? `Mensualité ${i + 1}/${n}` : `Échéance ${i + 1}/${n}`,
+    label: isLong
+      ? `Mensualité ${i + 1}/${n}`
+      : `${i + 1}${i === 0 ? "re" : "e"} éch.`,
     amount,
     due_label: isLong
       ? "Part de capital indicative (hors intérêts et frais)"
       : i === 0
-        ? "À la commande (acompte / 1ʳᵉ échéance)"
-        : i === n - 1
-          ? "Solde à la livraison / remise des clés"
-          : `Échéance intermédiaire ${i + 1}`,
+        ? "commande / livraison"
+        : `${i * 30} j`,
   }));
 }
 

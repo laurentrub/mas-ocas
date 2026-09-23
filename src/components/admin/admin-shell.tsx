@@ -9,6 +9,7 @@ import {
   FileText,
   Landmark,
   Users,
+  UserRound,
   LogOut,
   ExternalLink,
 } from "lucide-react";
@@ -22,6 +23,7 @@ const nav = [
   { href: "/admin/stock", label: "Stock", icon: Car },
   { href: "/admin/leads", label: "Demandes", icon: Inbox },
   { href: "/admin/commandes", label: "Bons de commande", icon: FileText },
+  { href: "/admin/clients", label: "Clients", icon: UserRound },
   { href: "/admin/rib", label: "RIB", icon: Landmark, adminOnly: true },
   { href: "/admin/equipe", label: "Équipe", icon: Users, superOnly: true },
 ] as const;
