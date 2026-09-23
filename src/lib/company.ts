@@ -23,4 +23,15 @@ export const company = {
   email: "contact@mas-ocas-auto.com",
   hours: "Du mardi au samedi · 9h30 – 12h30 / 14h – 18h30",
   tagline: "Garage multi-marques · vente & livraison",
+  hosting: {
+    name: "Vercel Inc.",
+    address: "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
+    website: "https://vercel.com",
+  },
+  /** À mettre à jour dès adhésion à un médiateur de la consommation. */
+  mediation: {
+    name: "Coordonnées communiquées sur demande",
+    website: "https://www.economie.gouv.fr/mediation-conso",
+    note: "En cours de désignation — réclamation écrite préalable obligatoire.",
+  },
 } as const;

@@ -81,6 +81,34 @@ export function SiteFooter() {
                 Mentions légales
               </Link>
             </li>
+            <li>
+              <Link
+                className="hover:text-white"
+                href="/politique-de-confidentialite"
+              >
+                Confidentialité
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/cookies">
+                Cookies
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/cgv">
+                CGV
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/cgu">
+                CGU
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white" href="/mediation">
+                Médiation et litiges
+              </Link>
+            </li>
             <li className="pt-2 text-chrome/60">
               {company.legalForm}
               <br />
