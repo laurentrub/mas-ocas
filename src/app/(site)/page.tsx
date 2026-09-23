@@ -14,6 +14,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
+import { HeroSlider } from "@/components/hero-slider";
 import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsletter } from "@/components/home-newsletter";
 import { company } from "@/lib/company";
@@ -25,11 +26,6 @@ import {
   vehiclePath,
 } from "@/lib/vehicles";
 import { listVehiclesFromDb } from "@/lib/vehicles-db";
-
-const heroVisual = {
-  src: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1600&q=80",
-  alt: "Voiture d’occasion en circulation urbaine",
-};
 
 const whyUs = [
   {
@@ -127,67 +123,24 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* 1. Hero */}
-      <section className="relative overflow-hidden bg-[#f4f6f9] pb-8 pt-10 sm:pb-10 sm:pt-14 lg:pb-12 lg:pt-16">
+      {/* 1. Hero — full-section slider (voitures / utilitaires) */}
+      <section className="relative z-20 overflow-x-clip pb-4 pt-6 sm:pb-5 sm:pt-8 lg:pb-6 lg:pt-8">
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-24 top-10 h-[420px] w-[420px] rounded-full bg-orange/25 blur-3xl"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,#f7e8f0_0%,#f5ebe3_28%,#e8eef8_58%,#e4f0f2_100%)]"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 bottom-0 h-[360px] w-[480px] rounded-[40%] bg-orange/20 blur-3xl"
+          className="pointer-events-none absolute -left-20 top-0 h-[280px] w-[280px] rounded-full bg-[#f3b8c8]/45 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute left-[28%] top-1/3 h-40 w-72 rotate-12 rounded-[50%] bg-[#ffb070]/35 blur-2xl"
+          className="pointer-events-none absolute right-[-8%] top-4 h-[300px] w-[360px] rounded-full bg-[#c9d8f5]/55 blur-3xl"
         />
 
-        <div className="relative mx-auto grid max-w-[1200px] items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-8">
-          <div className="relative mx-auto w-full max-w-xl animate-rise lg:max-w-none">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-xl shadow-[0_24px_55px_rgb(12_35_64/0.28)]">
-              <Image
-                src={heroVisual.src}
-                alt={heroVisual.alt}
-                fill
-                priority
-                className="object-cover animate-ken"
-                sizes="(max-width: 1024px) 100vw, 560px"
-              />
-            </div>
-          </div>
+        <HeroSlider />
 
-          <div className="relative z-10 text-center lg:text-left">
-            <p className="animate-rise font-display text-[11px] font-bold uppercase tracking-[0.22em] text-orange sm:text-xs">
-              {company.brand}
-            </p>
-            <h1 className="animate-rise-delay-1 mt-3 font-display text-[2rem] font-extrabold uppercase leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-[3.1rem]">
-              Trouvez la voiture qui vous ressemble
-            </h1>
-            <p className="animate-rise-delay-2 mt-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-orange sm:text-base">
-              Occasions multi-marques · Le Mans
-            </p>
-            <p className="animate-rise-delay-2 mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-[#5a6b80] lg:mx-0">
-              Véhicules contrôlés, dossier transparent, livraison possible. Cherchez
-              votre prochaine voiture ou contactez-nous directement.
-            </p>
-            <div className="animate-rise-delay-3 mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-              <Link
-                href="/stock"
-                className="inline-flex h-12 items-center rounded-lg bg-orange px-6 text-sm font-bold text-white transition-colors hover:bg-[#e05f00]"
-              >
-                Voir les véhicules
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex h-12 items-center rounded-lg border border-navy/20 bg-white px-6 text-sm font-bold text-navy transition-colors hover:border-orange hover:text-orange"
-              >
-                Nous contacter
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-20 mt-10 sm:mt-12 lg:-mb-10 lg:mt-14">
+        <div className="relative z-30 mt-4 sm:mt-5 lg:-mb-10 lg:mt-3">
           <HeroSearch />
         </div>
       </section>
@@ -195,7 +148,7 @@ export default async function HomePage() {
       {/* 2. Véhicules disponibles */}
       <section
         id="vehicules"
-        className="scroll-mt-28 border-b border-[#dce3ee] bg-white pb-16 pt-20 sm:pt-24 lg:pb-20 lg:pt-28"
+        className="relative z-0 scroll-mt-28 border-b border-[#dce3ee] bg-white pb-16 pt-20 sm:pt-24 lg:pb-20 lg:pt-28"
       >
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
