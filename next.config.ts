@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Allow ngrok tunnel host to hit the Next.js dev server (HMR / assets).
+  allowedDevOrigins: ["stencil-saggy-ultimatum.ngrok-free.dev"],
   // Prevent Turbopack from walking up to ~/Documents (stray package-lock.json there).
   turbopack: {
     root: process.cwd(),
