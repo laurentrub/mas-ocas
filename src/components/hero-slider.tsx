@@ -64,7 +64,7 @@ export function HeroSlider() {
                 height={600}
                 priority
                 unoptimized
-                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_14px_28px_rgba(10,37,64,0.24))]"
+                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_4px_20px_rgba(10,37,64,0.04))]"
                 sizes="(max-width: 1024px) 40vw, 280px"
               />
             </div>
@@ -76,7 +76,7 @@ export function HeroSlider() {
                 height={600}
                 priority
                 unoptimized
-                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_18px_32px_rgba(10,37,64,0.28))]"
+                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_5px_22px_rgba(10,37,64,0.05))]"
                 sizes="(max-width: 1024px) 55vw, 360px"
               />
             </div>
