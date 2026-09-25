@@ -30,31 +30,8 @@ export type NavItem = {
   children?: NavChild[];
 };
 
-/** Menu principal validé (sans poids lourds ni camping-cars). */
+/** Menu principal validé (sans poids lourds ni camping-cars). Utilitaires en premier. */
 export const STOCK_NAV: NavItem[] = [
-  {
-    id: "voitures",
-    label: "Voitures",
-    href: "/stock?cat=voitures",
-    children: [
-      { id: "all", label: "Toutes les voitures", href: "/stock?cat=voitures" },
-      {
-        id: "berlines",
-        label: "Berlines",
-        href: "/stock?cat=voitures&sub=berlines",
-      },
-      {
-        id: "citadines-compactes",
-        label: "Citadines / compactes",
-        href: "/stock?cat=voitures&sub=citadines-compactes",
-      },
-      {
-        id: "suv-crossover",
-        label: "SUV / crossover",
-        href: "/stock?cat=voitures&sub=suv-crossover",
-      },
-    ],
-  },
   {
     id: "utilitaires",
     label: "Utilitaires",
@@ -95,6 +72,29 @@ export const STOCK_NAV: NavItem[] = [
         id: "bennes",
         label: "Bennes / hayon",
         href: "/stock?cat=utilitaires&sub=bennes",
+      },
+    ],
+  },
+  {
+    id: "voitures",
+    label: "Voitures",
+    href: "/stock?cat=voitures",
+    children: [
+      { id: "all", label: "Toutes les voitures", href: "/stock?cat=voitures" },
+      {
+        id: "berlines",
+        label: "Berlines",
+        href: "/stock?cat=voitures&sub=berlines",
+      },
+      {
+        id: "citadines-compactes",
+        label: "Citadines / compactes",
+        href: "/stock?cat=voitures&sub=citadines-compactes",
+      },
+      {
+        id: "suv-crossover",
+        label: "SUV / crossover",
+        href: "/stock?cat=voitures&sub=suv-crossover",
       },
     ],
   },

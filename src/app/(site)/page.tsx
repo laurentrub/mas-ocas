@@ -22,7 +22,7 @@ import {
   formatPrice,
   vehiclePath,
 } from "@/lib/vehicles";
-import { listVehiclesFromDb } from "@/lib/vehicles-db";
+import { filterVehicleList, listVehiclesFromDb } from "@/lib/vehicles-db";
 
 const whyUs = [
   {
@@ -95,7 +95,9 @@ const financePoints = [
 
 export default async function HomePage() {
   const { vehicles } = await listVehiclesFromDb();
-  const available = vehicles.filter((v) => v.status !== "Réservé").slice(0, 6);
+  const available = filterVehicleList(vehicles, {})
+    .filter((v) => v.status !== "Réservé")
+    .slice(0, 6);
 
   return (
     <>

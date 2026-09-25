@@ -3,14 +3,22 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { getSessionStaff } from "@/lib/auth/session";
 import { buildInstallmentSchedule } from "@/lib/demandes";
 import {
   parseEquipmentCategories,
-  parseGalleryUrls,
   parseImportOrigin,
   parsePreparationFromForm,
 } from "@/lib/admin-vehicle-fields";
+import {
+  buildGalleryItems,
+  formExistingGalleryUrls,
+  formFile,
+  formFiles,
+  uploadVehicleGalleryPhotos,
+  uploadVehicleMainPhoto,
+} from "@/lib/vehicle-photo-upload";
 import type {
   VehicleFuel,
   VehicleStatus,
@@ -48,10 +56,6 @@ export async function saveVehicleAction(formData: FormData) {
 
   const imageAlt =
     formString(formData, "image_alt") || `${brand} ${model}`;
-  const gallery = parseGalleryUrls(
-    formString(formData, "gallery"),
-    imageAlt
-  );
   const equipmentCategories = parseEquipmentCategories(
     formString(formData, "equipment_categories")
   );
@@ -59,6 +63,29 @@ export async function saveVehicleAction(formData: FormData) {
   const importOrigin = parseImportOrigin(
     formString(formData, "import_country"),
     formString(formData, "import_note")
+  );
+
+  const supabase = await createClient();
+  const storage = createServiceRoleClient();
+
+  let image = formString(formData, "image");
+  const imageFile = formFile(formData, "image_file");
+  if (imageFile) {
+    image = await uploadVehicleMainPhoto(storage, imageFile, slug);
+  }
+  if (!image) {
+    throw new Error("Ajoutez une photo principale (fichier ou URL).");
+  }
+
+  const keptGallery = formExistingGalleryUrls(formData);
+  const galleryFiles = formFiles(formData, "gallery_files");
+  const uploadedGallery =
+    galleryFiles.length > 0
+      ? await uploadVehicleGalleryPhotos(storage, galleryFiles, slug)
+      : [];
+  const gallery = buildGalleryItems(
+    [...keptGallery, ...uploadedGallery],
+    imageAlt
   );
 
   const payload = {
@@ -79,7 +106,7 @@ export async function saveVehicleAction(formData: FormData) {
     description: formString(formData, "description"),
     editorial: formString(formData, "editorial") || null,
     warranty_note: formString(formData, "warranty_note") || null,
-    image: formString(formData, "image"),
+    image,
     image_alt: imageAlt,
     features: formString(formData, "features")
       .split("\n")
@@ -92,8 +119,6 @@ export async function saveVehicleAction(formData: FormData) {
     source: formString(formData, "source") || "manual",
     facebook_post_id: formString(formData, "facebook_post_id") || null,
   };
-
-  const supabase = await createClient();
 
   if (id) {
     const { error } = await supabase

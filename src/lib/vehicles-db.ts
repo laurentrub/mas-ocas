@@ -9,9 +9,18 @@ import { vehicles as mockVehicles } from "@/lib/vehicles";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import {
+  classifyVehicle,
   isHeavyVehicle,
   vehicleMatchesCategory,
 } from "@/lib/vehicle-categories";
+
+/** Priorité d’affichage stock : utilitaires d’abord. */
+function categorySortRank(v: Vehicle): number {
+  const c = classifyVehicle(v);
+  if (c?.category === "utilitaires") return 0;
+  if (c?.category === "voitures") return 1;
+  return 2;
+}
 
 function asCategories(value: unknown): EquipmentCategory[] | undefined {
   if (!Array.isArray(value)) return undefined;
@@ -174,15 +183,18 @@ export function filterVehicleList(
   const budget = params.budget ? Number(params.budget) : undefined;
   const km = params.km ? Number(params.km) : undefined;
 
-  return list.filter((v) => {
-    if (isHeavyVehicle(v)) return false;
-    if (!vehicleMatchesCategory(v, params.cat, params.sub)) return false;
-    if (q) {
-      const hay = `${v.brand} ${v.model} ${v.highlight} ${v.description}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    if (budget && !Number.isNaN(budget) && v.price > budget) return false;
-    if (km && !Number.isNaN(km) && v.mileage > km) return false;
-    return true;
-  });
+  return list
+    .filter((v) => {
+      if (isHeavyVehicle(v)) return false;
+      if (!vehicleMatchesCategory(v, params.cat, params.sub)) return false;
+      if (q) {
+        const hay =
+          `${v.brand} ${v.model} ${v.highlight} ${v.description}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (budget && !Number.isNaN(budget) && v.price > budget) return false;
+      if (km && !Number.isNaN(km) && v.mileage > km) return false;
+      return true;
+    })
+    .sort((a, b) => categorySortRank(a) - categorySortRank(b));
 }

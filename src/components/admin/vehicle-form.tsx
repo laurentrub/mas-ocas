@@ -3,6 +3,7 @@ import {
   deleteVehicleAction,
   saveVehicleAction,
 } from "@/app/admin/(dashboard)/actions";
+import { VehiclePhotosField } from "@/components/admin/vehicle-photos-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   PREPARATION_FIELD_LABELS,
   formatEquipmentCategories,
-  formatGalleryUrls,
 } from "@/lib/admin-vehicle-fields";
 import type { VehicleRow } from "@/lib/supabase/database.types";
 import type {
@@ -238,28 +238,11 @@ export async function VehicleForm({
 
         <section className="space-y-4">
           <h2 className="font-display text-lg font-bold text-navy">Photos</h2>
-          <Field
-            label="URL image principale"
-            name="image"
-            defaultValue={vehicle?.image}
+          <VehiclePhotosField
+            defaultImage={vehicle?.image}
+            defaultAlt={vehicle?.image_alt}
+            defaultGallery={asGallery(vehicle?.gallery ?? null)}
           />
-          <Field
-            label="Alt image"
-            name="image_alt"
-            defaultValue={vehicle?.image_alt}
-          />
-          <div className="space-y-2">
-            <Label htmlFor="gallery">Galerie (URLs, une par ligne)</Label>
-            <Textarea
-              id="gallery"
-              name="gallery"
-              rows={4}
-              placeholder="https://…"
-              defaultValue={formatGalleryUrls(
-                asGallery(vehicle?.gallery ?? null)
-              )}
-            />
-          </div>
         </section>
 
         <section className="space-y-4">
