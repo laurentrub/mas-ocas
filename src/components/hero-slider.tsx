@@ -37,7 +37,7 @@ export function HeroSlider() {
           <p className="mt-2.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-orange sm:text-sm">
             {subtitle}
           </p>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-2 lg:mt-6 lg:max-w-md">
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-2 sm:grid-cols-4 lg:mt-6 lg:max-w-md">
             {stats.map((stat) => (
               <li
                 key={stat.label}
@@ -56,7 +56,12 @@ export function HeroSlider() {
 
         <div className="relative w-full min-w-0 pr-2 sm:pr-4">
           <div className="relative mx-auto aspect-[16/9] max-h-[240px] w-full max-w-md sm:max-h-[280px] lg:ml-auto lg:max-h-[320px] lg:max-w-none">
+            {/* Voiture blanche (arrière) */}
             <div className="absolute right-[-2%] top-0 z-[1] w-[58%] sm:w-[54%]">
+              <div
+                aria-hidden
+                className="absolute bottom-[3%] left-[10%] h-[15%] w-[30%] rounded-full bg-black/5 blur-xl"
+              />
               <Image
                 src="/hero/car-back.png"
                 alt=""
@@ -64,11 +69,21 @@ export function HeroSlider() {
                 height={600}
                 priority
                 unoptimized
-                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_4px_20px_rgba(10,37,64,0.04))]"
+                className="pointer-events-none h-auto w-full select-none object-contain [mask-image:linear-gradient(to_bottom,black_88%,transparent_98%)]"
                 sizes="(max-width: 1024px) 40vw, 280px"
               />
             </div>
+
+            {/* Voiture bleue (avant) */}
             <div className="absolute bottom-0 left-[-4%] z-[2] w-[74%] sm:left-[-2%] sm:w-[70%]">
+              <div
+                aria-hidden
+                className="absolute bottom-[2%] left-[10%] h-[15%] w-[30%] rounded-full bg-black/5 blur-xl"
+              />
+              <div
+                aria-hidden
+                className="absolute bottom-[3%] left-[20%] h-[10%] w-[20%] rounded-full bg-black/10 blur-lg"
+              />
               <Image
                 src="/hero/car-front.png"
                 alt={alt}
@@ -76,7 +91,7 @@ export function HeroSlider() {
                 height={600}
                 priority
                 unoptimized
-                className="pointer-events-none h-auto w-full select-none object-contain [filter:drop-shadow(0_5px_22px_rgba(10,37,64,0.05))]"
+                className="pointer-events-none h-auto w-full select-none object-contain [mask-image:linear-gradient(to_bottom,black_86%,transparent_96%)]"
                 sizes="(max-width: 1024px) 55vw, 360px"
               />
             </div>
