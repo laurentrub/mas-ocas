@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminVehicleThumb } from "@/components/admin/vehicle-thumb";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice, formatMileage } from "@/lib/vehicles";
 
@@ -6,7 +7,9 @@ export default async function AdminStockPage() {
   const supabase = await createClient();
   const { data: vehicles } = await supabase
     .from("vehicles")
-    .select("id, slug, brand, model, year, price, mileage, status, source")
+    .select(
+      "id, slug, brand, model, year, price, mileage, status, source, image, image_alt"
+    )
     .order("created_at", { ascending: false });
 
   return (
@@ -29,7 +32,7 @@ export default async function AdminStockPage() {
       </div>
 
       <div className="overflow-x-auto border border-[#d0d9e6] bg-white">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="border-b border-[#d0d9e6] bg-mist text-xs uppercase tracking-wide text-[#5a6b80]">
             <tr>
               <th className="px-4 py-3 font-semibold">Véhicule</th>
@@ -44,10 +47,18 @@ export default async function AdminStockPage() {
             {(vehicles ?? []).map((v) => (
               <tr key={v.id} className="border-b border-[#eef2f7]">
                 <td className="px-4 py-3">
-                  <p className="font-semibold text-navy">
-                    {v.brand} {v.model}
-                  </p>
-                  <p className="text-xs text-[#5a6b80]">{v.year}</p>
+                  <div className="flex items-center gap-3">
+                    <AdminVehicleThumb
+                      src={v.image}
+                      alt={v.image_alt || `${v.brand} ${v.model}`}
+                    />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-navy">
+                        {v.brand} {v.model}
+                      </p>
+                      <p className="text-xs text-[#5a6b80]">{v.year}</p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3">{formatPrice(Number(v.price))}</td>
                 <td className="px-4 py-3">{formatMileage(v.mileage)}</td>

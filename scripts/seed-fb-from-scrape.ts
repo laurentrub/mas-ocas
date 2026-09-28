@@ -3,12 +3,14 @@
  * Usage: npx tsx --env-file=.env.local scripts/seed-fb-from-scrape.ts [path/to/fb-scrape.json]
  *
  * Upserts by slug; sets source=facebook and facebook_post_id when present.
+ * Mirrors remote photos (fbcdn) into the vehicle-photos Supabase bucket.
  * Does NOT create or call /api/admin/sync-fb.
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { parseFacebookVehicles } from "../src/lib/import-fb";
+import { mirrorVehicleImageFields } from "../src/lib/vehicle-photo-upload";
 
 async function main() {
   const inputPath = resolve(
@@ -48,10 +50,28 @@ async function main() {
   });
 
   let upserted = 0;
+  let mirrored = 0;
   const errors: string[] = [];
 
   for (const row of parsed) {
-    const payload = { ...row, source: "facebook" as const };
+    const gallery = Array.isArray(row.gallery)
+      ? (row.gallery as { src: string; alt: string }[])
+      : null;
+
+    const photos = await mirrorVehicleImageFields(
+      supabase,
+      row.slug,
+      row.image ?? "",
+      gallery
+    );
+    if (photos.image && photos.image !== row.image) mirrored += 1;
+
+    const payload = {
+      ...row,
+      image: photos.image || row.image,
+      gallery: photos.gallery,
+      source: "facebook" as const,
+    };
     const { error } = await supabase
       .from("vehicles")
       .upsert(payload, { onConflict: "slug" });
@@ -60,17 +80,20 @@ async function main() {
       console.error("FAIL", row.slug, error.message);
     } else {
       upserted += 1;
+      const hosted = photos.image?.includes("vehicle-photos") ? "hosted✓" : "cdn?";
       console.log(
         "OK",
         row.slug,
         row.facebook_post_id ? `(fb:${row.facebook_post_id})` : "",
         `${row.price}€`,
-        row.image ? "img✓" : "img✗"
+        photos.image ? "img✓" : "img✗",
+        hosted
       );
     }
   }
 
   console.log(`\nUpserted ${upserted}/${parsed.length}`);
+  console.log(`Photos mirrored to Supabase: ${mirrored}`);
   if (errors.length) {
     console.error("Errors:", errors.join("\n"));
     process.exit(1);

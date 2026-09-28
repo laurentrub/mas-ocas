@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSessionStaff } from "@/lib/auth/session";
+import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { parseFacebookVehicles } from "@/lib/import-fb";
+import { mirrorVehicleImageFields } from "@/lib/vehicle-photo-upload";
 
 export async function POST(request: Request) {
   const session = await getSessionStaff();
@@ -25,12 +27,28 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
+  const storage = createServiceRoleClient();
   let upserted = 0;
+  let mirrored = 0;
 
   for (const row of parsed) {
+    const gallery = Array.isArray(row.gallery)
+      ? (row.gallery as { src: string; alt: string }[])
+      : null;
+
+    const photos = await mirrorVehicleImageFields(
+      storage,
+      row.slug,
+      row.image ?? "",
+      gallery
+    );
+    if (photos.image && photos.image !== row.image) mirrored += 1;
+
     const { error } = await supabase.from("vehicles").upsert(
       {
         ...row,
+        image: photos.image || row.image,
+        gallery: photos.gallery,
         created_by: session.user.id,
         source: "facebook",
       },
@@ -39,5 +57,9 @@ export async function POST(request: Request) {
     if (!error) upserted += 1;
   }
 
-  return NextResponse.json({ upserted, total: parsed.length });
+  return NextResponse.json({
+    upserted,
+    total: parsed.length,
+    mirrored,
+  });
 }

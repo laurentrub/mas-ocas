@@ -79,6 +79,111 @@ export async function uploadVehicleMainPhoto(
   return uploadVehiclePhoto(supabase, file, slug, "main");
 }
 
+function mimeFromContentType(header: string | null): string {
+  const raw = (header ?? "").split(";")[0]?.trim().toLowerCase() ?? "";
+  if (ALLOWED_TYPES.has(raw)) return raw;
+  return "image/jpeg";
+}
+
+/**
+ * Télécharge une URL distante (ex. Facebook CDN) et la stocke dans le bucket
+ * public. Retourne l’URL publique Supabase, ou `null` si le téléchargement échoue.
+ */
+export async function mirrorRemoteVehiclePhoto(
+  supabase: SupabaseClient,
+  remoteUrl: string,
+  slug: string,
+  kind: "main" | "gallery",
+  index = 0
+): Promise<string | null> {
+  const url = remoteUrl.trim();
+  if (!url || !/^https?:\/\//i.test(url)) return null;
+
+  // Déjà hébergé chez nous
+  if (url.includes("/storage/v1/object/public/vehicle-photos/")) {
+    return url;
+  }
+
+  try {
+    const res = await fetch(url, {
+      redirect: "follow",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (compatible; MasOcasBot/1.0; +https://masocas.fr)",
+        Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        Referer: "https://www.facebook.com/",
+      },
+      signal: AbortSignal.timeout(25_000),
+    });
+    if (!res.ok) return null;
+
+    const contentType = mimeFromContentType(res.headers.get("content-type"));
+    const buffer = Buffer.from(await res.arrayBuffer());
+    if (!buffer.length || buffer.length > MAX_BYTES) return null;
+
+    const ext = extensionFor(contentType, url);
+    const stamp = Date.now();
+    const path =
+      kind === "main"
+        ? `${slug}/main-${stamp}.${ext}`
+        : `${slug}/gallery-${stamp}-${index}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from(VEHICLE_PHOTOS_BUCKET)
+      .upload(path, buffer, {
+        contentType,
+        upsert: true,
+        cacheControl: "31536000",
+      });
+    if (error) {
+      console.error("[photos] mirror upload failed:", error.message);
+      return null;
+    }
+
+    const { data } = supabase.storage
+      .from(VEHICLE_PHOTOS_BUCKET)
+      .getPublicUrl(path);
+    return data.publicUrl;
+  } catch (err) {
+    console.error("[photos] mirror fetch failed:", err);
+    return null;
+  }
+}
+
+/** Miroir image principale + galerie ; conserve l’URL d’origine si échec. */
+export async function mirrorVehicleImageFields(
+  supabase: SupabaseClient,
+  slug: string,
+  image: string,
+  gallery: { src: string; alt: string }[] | null | undefined
+): Promise<{
+  image: string;
+  gallery: { src: string; alt: string }[] | null;
+}> {
+  const mirroredMain =
+    (await mirrorRemoteVehiclePhoto(supabase, image, slug, "main")) ?? image;
+
+  if (!gallery?.length) {
+    return { image: mirroredMain, gallery: null };
+  }
+
+  const nextGallery: { src: string; alt: string }[] = [];
+  for (let i = 0; i < gallery.length; i++) {
+    const item = gallery[i]!;
+    const mirrored =
+      (await mirrorRemoteVehiclePhoto(
+        supabase,
+        item.src,
+        slug,
+        "gallery",
+        i
+      )) ?? item.src;
+    nextGallery.push({ ...item, src: mirrored });
+  }
+
+  return { image: mirroredMain, gallery: nextGallery };
+}
+
 /** Upload plusieurs photos de galerie. */
 export async function uploadVehicleGalleryPhotos(
   supabase: SupabaseClient,

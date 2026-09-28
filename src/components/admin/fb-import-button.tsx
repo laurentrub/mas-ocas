@@ -21,7 +21,11 @@ export function FbImportButton() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Import échoué");
-      setStatus(`Importé : ${data.upserted} véhicule(s)`);
+      const mirrored =
+        typeof data.mirrored === "number" && data.mirrored > 0
+          ? ` · ${data.mirrored} photo(s) sauvegardée(s)`
+          : "";
+      setStatus(`Importé : ${data.upserted} véhicule(s)${mirrored}`);
       window.location.reload();
     } catch (e) {
       setStatus(e instanceof Error ? e.message : "Erreur d’import");
