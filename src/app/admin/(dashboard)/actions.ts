@@ -154,6 +154,57 @@ export async function deleteVehicleAction(formData: FormData) {
   redirect("/admin/stock");
 }
 
+const VEHICLE_STATUSES: VehicleStatus[] = [
+  "Disponible",
+  "Réservé",
+  "Livraison sous 48h",
+  "Vendu",
+];
+
+function formIdList(formData: FormData): string[] {
+  return formData
+    .getAll("ids")
+    .map((v) => String(v).trim())
+    .filter(Boolean);
+}
+
+export async function bulkUpdateVehicleStatusAction(formData: FormData) {
+  const session = await getSessionStaff();
+  if (!session) throw new Error("Non autorisé");
+
+  const ids = formIdList(formData);
+  const status = formString(formData, "status") as VehicleStatus;
+  if (!ids.length) throw new Error("Aucun véhicule sélectionné");
+  if (!VEHICLE_STATUSES.includes(status)) throw new Error("Statut invalide");
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("vehicles")
+    .update({ status })
+    .in("id", ids);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/stock");
+  revalidatePath("/stock");
+  revalidatePath("/");
+}
+
+export async function bulkDeleteVehiclesAction(formData: FormData) {
+  const session = await getSessionStaff();
+  if (!session?.access.canDeleteVehicles) throw new Error("Non autorisé");
+
+  const ids = formIdList(formData);
+  if (!ids.length) throw new Error("Aucun véhicule sélectionné");
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("vehicles").delete().in("id", ids);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/stock");
+  revalidatePath("/stock");
+  revalidatePath("/");
+}
+
 export async function updateLeadAction(formData: FormData) {
   const session = await getSessionStaff();
   if (!session) throw new Error("Non autorisé");
