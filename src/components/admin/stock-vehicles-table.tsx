@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
+import { Search, X } from "lucide-react";
 import {
   bulkDeleteVehiclesAction,
   bulkUpdateVehicleStatusAction,
 } from "@/app/admin/(dashboard)/actions";
 import { AdminVehicleThumb } from "@/components/admin/vehicle-thumb";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { formatMileage, formatPrice } from "@/lib/vehicles";
 import type { VehicleStatus } from "@/lib/supabase/database.types";
 import { cn } from "@/lib/utils";
@@ -32,33 +34,69 @@ const STATUSES: VehicleStatus[] = [
   "Vendu",
 ];
 
+function normalizeSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 type Props = {
   vehicles: StockVehicleRow[];
   canDelete: boolean;
 };
 
 export function StockVehiclesTable({ vehicles, canDelete }: Props) {
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [bulkStatus, setBulkStatus] = useState<VehicleStatus>("Disponible");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const selectAllRef = useRef<HTMLInputElement>(null);
 
-  const allIds = useMemo(() => vehicles.map((v) => v.id), [vehicles]);
+  const filtered = useMemo(() => {
+    const q = normalizeSearch(query);
+    if (!q) return vehicles;
+    return vehicles.filter((v) => {
+      const hay = normalizeSearch(
+        [
+          v.brand,
+          v.model,
+          String(v.year),
+          v.status,
+          v.source,
+          String(v.price),
+          String(v.mileage),
+        ].join(" ")
+      );
+      return hay.includes(q);
+    });
+  }, [vehicles, query]);
+
+  const visibleIds = useMemo(() => filtered.map((v) => v.id), [filtered]);
   const selectedCount = selected.size;
-  const allSelected = allIds.length > 0 && selectedCount === allIds.length;
-  const someSelected = selectedCount > 0 && !allSelected;
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selected.has(id));
+  const someVisibleSelected =
+    visibleIds.some((id) => selected.has(id)) && !allVisibleSelected;
 
   useEffect(() => {
     if (selectAllRef.current) {
-      selectAllRef.current.indeterminate = someSelected;
+      selectAllRef.current.indeterminate = someVisibleSelected;
     }
-  }, [someSelected]);
+  }, [someVisibleSelected]);
 
   function toggleAll() {
     setSelected((prev) => {
-      if (prev.size === allIds.length) return new Set();
-      return new Set(allIds);
+      if (allVisibleSelected) {
+        const next = new Set(prev);
+        for (const id of visibleIds) next.delete(id);
+        return next;
+      }
+      const next = new Set(prev);
+      for (const id of visibleIds) next.add(id);
+      return next;
     });
   }
 
@@ -112,6 +150,38 @@ export function StockVehiclesTable({ vehicles, canDelete }: Props) {
 
   return (
     <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[220px] flex-1">
+          <Search
+            className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-[#9aa8ba]"
+            aria-hidden
+          />
+          <Input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Rechercher marque, modèle, année, statut…"
+            className="pl-8 pr-8"
+            aria-label="Rechercher dans le stock"
+          />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded text-[#5a6b80] hover:bg-mist hover:text-navy"
+              aria-label="Effacer la recherche"
+            >
+              <X className="size-3.5" aria-hidden />
+            </button>
+          ) : null}
+        </div>
+        {query.trim() ? (
+          <p className="text-sm text-[#5a6b80]">
+            {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
+          </p>
+        ) : null}
+      </div>
+
       {selectedCount > 0 ? (
         <div className="flex flex-wrap items-center gap-3 border border-[#d0d9e6] bg-white px-4 py-3">
           <p className="text-sm font-semibold text-navy">
@@ -177,9 +247,9 @@ export function StockVehiclesTable({ vehicles, canDelete }: Props) {
                 <input
                   ref={selectAllRef}
                   type="checkbox"
-                  checked={allSelected}
+                  checked={allVisibleSelected}
                   onChange={toggleAll}
-                  disabled={!vehicles.length || pending}
+                  disabled={!filtered.length || pending}
                   aria-label="Tout sélectionner"
                   className="size-4 accent-orange"
                 />
@@ -193,7 +263,7 @@ export function StockVehiclesTable({ vehicles, canDelete }: Props) {
             </tr>
           </thead>
           <tbody>
-            {vehicles.map((v) => {
+            {filtered.map((v) => {
               const isOn = selected.has(v.id);
               return (
                 <tr
@@ -251,6 +321,15 @@ export function StockVehiclesTable({ vehicles, canDelete }: Props) {
                   className="px-4 py-10 text-center text-[#5a6b80]"
                 >
                   Aucun véhicule. Cliquez sur Ajouter pour en créer un.
+                </td>
+              </tr>
+            ) : !filtered.length ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="px-4 py-10 text-center text-[#5a6b80]"
+                >
+                  Aucun résultat pour « {query.trim()} ».
                 </td>
               </tr>
             ) : null}
