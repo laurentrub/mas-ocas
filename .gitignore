@@ -42,3 +42,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 supabase/.temp/
+
+# Facebook scrape session / checkpoints
+.fb-chrome-profile/
+scripts/fb-scrape.partial.json

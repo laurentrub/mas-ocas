@@ -52,8 +52,9 @@ export const company = {
   activityStartDate: "28/08/2026",
   fundOrigin: "Création",
   exploitationMode: "Exploitation personnelle",
-  /** Placeholder — à remplacer par la ligne du garage. */
-  phone: "À compléter",
+  phone: "03 30 01 26 49",
+  /** Ligne WhatsApp Business (mobile). */
+  whatsapp: "+33 7 70 07 82 98",
   email: "contact@mas-ocas-auto.com",
   hours: "Du mardi au samedi · 9h30 – 12h30 / 14h – 18h30",
   tagline: "Garage multi-marques · vente & livraison",
@@ -70,9 +71,27 @@ export const company = {
   },
 } as const;
 
+/** Digits only, FR mobile/landline normalized to international without `+`. */
+function frPhoneDigits(raw: string): string | null {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length < 10) return null;
+  if (digits.startsWith("33") && digits.length >= 11) return digits;
+  if (digits.startsWith("0") && digits.length === 10) return `33${digits.slice(1)}`;
+  return digits;
+}
+
 /** `tel:` href when `company.phone` looks like a real FR number; otherwise null. */
 export function companyTelHref(): string | null {
-  const digits = company.phone.replace(/\D/g, "");
-  if (digits.length < 10) return null;
-  return `tel:${digits}`;
+  const digits = frPhoneDigits(company.phone);
+  if (!digits) return null;
+  return `tel:+${digits}`;
+}
+
+/** WhatsApp click-to-chat (`wa.me`) when a mobile line is configured. */
+export function companyWhatsAppHref(prefill?: string): string | null {
+  const digits = frPhoneDigits(company.whatsapp);
+  if (!digits) return null;
+  const base = `https://wa.me/${digits}`;
+  if (!prefill?.trim()) return base;
+  return `${base}?text=${encodeURIComponent(prefill.trim())}`;
 }

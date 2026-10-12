@@ -10,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const telHref = companyTelHref();
+
   return (
     <div className="mx-auto max-w-6xl space-y-12 px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
       <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
@@ -39,8 +41,8 @@ export default function ContactPage() {
                 Téléphone
               </dt>
               <dd className="mt-1 font-medium text-ink">
-                {companyTelHref() ? (
-                  <a className="hover:text-signal" href={companyTelHref()!}>
+                {telHref ? (
+                  <a className="hover:text-signal" href={telHref}>
                     {company.phone}
                   </a>
                 ) : (

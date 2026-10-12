@@ -2,6 +2,8 @@ import Link from "next/link";
 import { company, companyTelHref } from "@/lib/company";
 
 export function SiteFooter() {
+  const telHref = companyTelHref();
+
   return (
     <footer className="mt-auto border-t border-white/10 bg-navy text-chrome">
       <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
@@ -22,8 +24,8 @@ export function SiteFooter() {
             <p>{company.legalName}</p>
             <p>{company.address.full}</p>
             <p>
-              {companyTelHref() ? (
-                <a className="hover:text-white" href={companyTelHref()!}>
+              {telHref ? (
+                <a className="hover:text-white" href={telHref}>
                   {company.phone}
                 </a>
               ) : (

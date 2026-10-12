@@ -27,6 +27,7 @@ const pillars = [
 ] as const;
 
 export default function AProposPage() {
+  const telHref = companyTelHref();
   return (
     <div>
       <section className="bg-navy text-white py-16 lg:py-24">
@@ -85,12 +86,12 @@ export default function AProposPage() {
                 >
                   {company.email}
                 </a>
-                {companyTelHref() ? (
+                {telHref ? (
                   <>
                     {" · "}
                     <a
                       className="font-semibold text-orange hover:underline"
-                      href={companyTelHref()!}
+                      href={telHref}
                     >
                       {company.phone}
                     </a>
