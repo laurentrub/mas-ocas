@@ -139,6 +139,7 @@ function SiteHeaderInner() {
   const searchParams = useSearchParams();
   const cat = searchParams.get("cat");
   const sub = searchParams.get("sub");
+  const telHref = companyTelHref();
   const [open, setOpen] = useState(false);
   const [mobileOpenId, setMobileOpenId] = useState<string | null>(null);
 
@@ -155,20 +156,27 @@ function SiteHeaderInner() {
             Garage multi-marques · vente &amp; livraison
           </p>
 
-          <Link
-            href="/contact"
-            className="hidden items-center gap-1.5 text-white/95 transition-opacity hover:opacity-80 sm:inline-flex"
-          >
-            <Network className="size-3.5 shrink-0" aria-hidden />
-            <span>Nous contacter</span>
-          </Link>
-
-          {companyTelHref() ? (
-            <a
-              href={companyTelHref()!}
-              className="sm:hidden"
-              aria-label="Appeler"
+          <div className="hidden items-center gap-4 sm:flex">
+            {telHref ? (
+              <a
+                href={telHref}
+                className="inline-flex items-center gap-1.5 font-semibold text-white transition-opacity hover:opacity-80"
+              >
+                <Phone className="size-3.5 shrink-0" aria-hidden />
+                <span>{company.phone}</span>
+              </a>
+            ) : null}
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-1.5 text-white/95 transition-opacity hover:opacity-80"
             >
+              <Network className="size-3.5 shrink-0" aria-hidden />
+              <span>Nous contacter</span>
+            </Link>
+          </div>
+
+          {telHref ? (
+            <a href={telHref} className="sm:hidden" aria-label={`Appeler ${company.phone}`}>
               <Phone className="size-3.5" />
             </a>
           ) : (
